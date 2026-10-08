@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerMovement : MonoBehaviour
+public class MovementController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 7.5f;
 
@@ -26,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.8f, 0.2f);
     [SerializeField] private LayerMask groundLayer;
 
+    public bool movementEnabled = true;
+
+    private PlayerBehaviour playerBehaviour;
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private bool isGrounded;
@@ -38,6 +41,12 @@ public class PlayerMovement : MonoBehaviour
     private void ProcessInput()
     {
         if (isDashing) return;
+
+        if (!movementEnabled)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
 
         // so apparently this method is outdated in this unity version
         // HOWEVER, there is an option to re-enable it, although it may cause issues
@@ -154,6 +163,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerBehaviour = GetComponent<PlayerBehaviour>();
         gravityScale = rb.gravityScale;
     }
 

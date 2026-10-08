@@ -16,7 +16,8 @@ public class CameraController : MonoBehaviour
     // zoom
     [SerializeField] private float minFOV = 3f;  // Zoomed in size
     [SerializeField] private float maxFOV = 8f;  // Zoomed out size (default)
-    [SerializeField] private float zoomSpeed = 5f;
+    [SerializeField] private float zoomSpeed = 15f;
+    [SerializeField] private float zoomXOffset = 3f;
 
     private float targetFOV;
 
@@ -37,24 +38,37 @@ public class CameraController : MonoBehaviour
             targetPos.y = transform.position.y;
         }
 
-        transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVel, smoothTime);
+        transform.position = Vector3.SmoothDamp(
+            transform.position, 
+            targetPos, 
+            ref currentVel, 
+            smoothTime, 
+            Mathf.Infinity,
+            Time.unscaledDeltaTime
+        );
     }
 
     private void ProcessZoom()
     {
         if (!cam) return;
 
-        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetFOV, ref zoomSpeed, 0.2f);
+        cam.orthographicSize = Mathf.Lerp(
+            cam.orthographicSize, 
+            targetFOV, 
+            zoomSpeed * Time.unscaledDeltaTime
+        );
     }
 
     public void ZoomIn()
     {
         targetFOV = minFOV;
+        offset = new Vector3(zoomXOffset, 0, -10);
     }
 
     public void ZoomOut()
     {
         targetFOV = maxFOV;
+        offset = new Vector3(0, 0, -10);
     }
 
     // ---- MONOBEHAVIOUR ---- \\

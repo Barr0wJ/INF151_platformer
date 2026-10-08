@@ -1,9 +1,11 @@
 using UnityEngine;
+using TMPro;
 
 public class GameTimer : MonoBehaviour
 {
     public static GameTimer Instance { get; private set; } // allows GameTimer.Instance
     
+    [SerializeField] private TextMeshProUGUI timerLabel;
     [SerializeField] private float time = 100; // seconds
 
 
@@ -12,15 +14,20 @@ public class GameTimer : MonoBehaviour
         return time;
     }
 
-    // Returns in format: mm:ss:ms. Will this be used? idk
+    // Returns in format: ss:ms
     public string GetClockTime()
     {
-        return "";
+        float abs = Mathf.Abs(time);
+        int seconds = Mathf.FloorToInt(abs);
+        int ms = Mathf.FloorToInt((abs - seconds) * 100f);
+
+        string formattedTime = $"{seconds:D2}:{ms:D2}";
+        return time < 0f ? $"-{formattedTime}" : formattedTime;
     }
 
     public void IncreaseTime(float value)
     {
-        time -= value;
+        time += value;
     }
 
     public void DecreaseTime(float value)
@@ -28,6 +35,14 @@ public class GameTimer : MonoBehaviour
         time -= value;
     }
 
+    private void ProcessRoundTimer()
+    {
+        time -= Time.deltaTime;
+        timerLabel.text = GetClockTime();
+    }
+
+
+    // ---- MONOBEHAVIOUR ---- \\
 
     void Awake()
     {
@@ -54,6 +69,6 @@ public class GameTimer : MonoBehaviour
         // probably decrease by unscaledDeltaTime, but this is for
         // the round timer
 
-        time -= Time.deltaTime; 
+        ProcessRoundTimer();
     }
 }
