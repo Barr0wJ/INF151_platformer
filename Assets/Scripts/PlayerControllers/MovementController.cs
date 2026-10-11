@@ -12,6 +12,13 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float jumpCutMultiplier = 0.5f; // Short jump on early button release
     [SerializeField] private int maxExtraJumps = 1; // double jump
 
+    [Header("Wall Jump Settings")]
+    [SerializeField] private float wallJumpForce = 10f;
+    [SerializeField] private float wallJumpDuration = 0.2f;
+    [SerializeField] private float wallSlideSpeed = 2f;
+    [SerializeField] private float wallCheckDistance = 0.2f;
+
+
     [Header("Dash Settings")]
     [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private float dashDur = 0.2f;
@@ -34,9 +41,26 @@ public class MovementController : MonoBehaviour
     private bool isGrounded;
     private int remainingJumps;
 
+    private bool isWallSliding;
+    private bool isWallJumping;
+
     private bool isDashing;
     private bool canDash = true;
     private float gravityScale;
+
+private bool IsTouchingWall()
+{
+    Vector2 direction = new Vector2(moveInput.x, 0f).normalized;
+    RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, wallCheckDistance, groundLayer);
+    return hit.collider != null;
+}
+
+private void WallSlide()
+    {
+        isWallSliding = true;
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlideSpeed, float.MaxValue));
+
+    }
 
     private void ProcessInput()
     {
@@ -175,8 +199,12 @@ public class MovementController : MonoBehaviour
     private void FixedUpdate()
     {
         CheckGrounded();
-
+        if (IsTouchingWall())
+        {
+            WallSlide();
+        }
         if (isDashing) return;
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
     }
 }
+
