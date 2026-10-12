@@ -32,6 +32,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.8f, 0.2f);
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask obstacleLayer;
 
     public bool movementEnabled = true;
 
@@ -39,6 +40,7 @@ public class MovementController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private bool isGrounded;
+    private bool isObstructed;
     private int remainingJumps;
 
     private bool isWallSliding;
@@ -204,6 +206,19 @@ private void WallSlide()
         }
     }
 
+    private void CheckObstacle()
+    {
+
+        if (groundCheck != null)
+        {
+            isObstructed = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, obstacleLayer);
+            Debug.Log(isObstructed);
+
+        }
+    }
+
+
+
     // For testing visualization
     private void OnDrawGizmosSelected()
     {
@@ -229,6 +244,12 @@ private void WallSlide()
     private void FixedUpdate()
     {
         CheckGrounded();
+        CheckObstacle();
+        if (isObstructed)
+        {   // Destroys the script within the player object, might want to change to something else later
+            GameObject.Destroy(this);
+        }
+
         if (IsTouchingWall())
         {
             WallSlide();
