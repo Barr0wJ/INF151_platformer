@@ -45,6 +45,7 @@ public class MovementController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private bool isGrounded;
+    private bool isObstructed;
     private int remainingJumps;
 
     private bool isWallSliding;
@@ -54,7 +55,7 @@ public class MovementController : MonoBehaviour
     private bool canDash = true;
     private float gravityScale;
 
-    private Vector2 direction;
+    private Vector2 direction = Vector2.right;
 
 private bool IsTouchingWall()
 {
@@ -101,6 +102,10 @@ private void WallSlide()
         if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) input.y += 1f;
         if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) input.y -= 1f;
         moveInput = input;
+        if (input.x != 0f)
+        {
+            direction = new Vector2(Mathf.Sign(input.x), 0f);
+        }
 
         // method 2 requires using something called an InputActionEvent. If someone wants to take the time to
         // learn how to link that up then cool
@@ -182,12 +187,12 @@ private void WallSlide()
         isDashing = true;
         rb.gravityScale = 0f; // temporarily disable gravity
 
-        Vector2 dashDir = moveInput.normalized;
-
-        if (dashDir == Vector2.zero)
-        {
-            dashDir = new Vector2(moveInput.x > 0 ? 1f : -1f, 0f);
-        }
+        //Vector2 dashDir = moveInput.normalized;
+        Vector2 dashDir = direction.normalized;
+        //if (dashDir == Vector2.zero)
+        //{
+        //    dashDir = new Vector2(moveInput.x > 0 ? 1f : -1f, 0f);
+        //}
 
         rb.linearVelocity = dashDir * dashSpeed;
 
@@ -207,6 +212,17 @@ private void WallSlide()
             isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
         }
     }
+
+    private void CheckObstacle()
+    {
+
+        if (groundCheck != null)
+        {
+            isObstructed = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, obstacleLayer);
+        }
+    }
+
+
 
     // For testing visualization
     private void OnDrawGizmosSelected()
@@ -234,6 +250,13 @@ private void WallSlide()
     private void FixedUpdate()
     {
         CheckGrounded();
+        CheckObstacle();
+        if (isObstructed)
+        {   // Destroys the script within the player object, might want to change to something else later
+            GameObject.Destroy(this);
+            rb.freezeRotation = false;
+        }
+
         if (IsTouchingWall())
         {
             WallSlide();
@@ -242,4 +265,3 @@ private void WallSlide()
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
     }
 }
-
