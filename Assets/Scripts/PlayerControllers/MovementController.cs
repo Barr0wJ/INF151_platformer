@@ -246,6 +246,7 @@ private void WallSlide()
         if (isObstructed)
         {   // Destroys the script within the player object, might want to change to something else later
             GameObject.Destroy(this);
+            rb.freezeRotation = false;
         }
 
         if (IsTouchingWall())
