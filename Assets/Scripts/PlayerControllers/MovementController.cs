@@ -13,7 +13,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private int maxExtraJumps = 0; // double jump
 
     [Header("Wall Jump Settings")]
-    [SerializeField] private float wallJumpForce = 10f;
+    [SerializeField] private float wallJumpForce = 5f;
     [SerializeField] private float wallJumpDuration = 0.2f;
     [SerializeField] private float wallSlideSpeed = 2f;
     [SerializeField] private float wallCheckDistance = 0.2f;
@@ -67,12 +67,12 @@ private bool IsTouchingWall()
 
 private void WallSlide()
     {
+        if (isWallJumping) return;
         isWallSliding = IsTouchingWall() && rb.linearVelocity.y <= 0f;
         if (isWallSliding)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -wallSlideSpeed);
+            rb.linearVelocity = new Vector2(0, -wallSlideSpeed);
         }
-
     }
 
     private void ProcessInput()
@@ -130,10 +130,12 @@ private void WallSlide()
             if (IsTouchingWall())
             {
                 Debug.Log("Wall Jump");
-                isWallSliding = false;
-                isWallJumping = true;
 
+                isWallJumping = true;
                 WallJump();
+
+                isWallSliding = false;
+
 
             }
             else
@@ -179,7 +181,17 @@ private void WallSlide()
 
     private void WallJump()
     {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer))
+        {
+            Debug.Log("Wall Jump Right Wall");
+            rb.linearVelocity = new Vector2(-wallJumpForce, wallJumpForce);
+        }
+        else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer))
+        {
+            Debug.Log("Wall Jump Left Wall");
+            rb.linearVelocity = new Vector2(wallJumpForce, wallJumpForce);
+        }
+        isWallJumping = false;
 
     }
 
@@ -269,6 +281,7 @@ private void WallSlide()
         {
             WallSlide();
         }
+
         if (isDashing) return;
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
     }
