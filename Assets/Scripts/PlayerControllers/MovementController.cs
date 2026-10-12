@@ -48,14 +48,14 @@ public class MovementController : MonoBehaviour
     private bool canDash = true;
     private float gravityScale;
 
-    private Vector2 direction;
+    private Vector2 direction = Vector2.right;
 
-private bool IsTouchingWall()
-{
-    direction = new Vector2(moveInput.x, 0f).normalized;
-    RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, wallCheckDistance, groundLayer);
-    return hit.collider != null;
-}
+    private bool IsTouchingWall()
+    {
+        Vector2 wallCheckDirection = new Vector2(moveInput.x, 0f).normalized;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, wallCheckDirection, wallCheckDistance, groundLayer);
+        return hit.collider != null;
+    }
 
 private void WallSlide()
     {
@@ -99,6 +99,10 @@ private void WallSlide()
         if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) input.y += 1f;
         if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) input.y -= 1f;
         moveInput = input;
+        if (input.x != 0f)
+        {
+            direction = new Vector2(Mathf.Sign(input.x), 0f);
+        }
 
         // method 2 requires using something called an InputActionEvent. If someone wants to take the time to
         // learn how to link that up then cool
@@ -174,12 +178,12 @@ private void WallSlide()
         isDashing = true;
         rb.gravityScale = 0f; // temporarily disable gravity
 
-        Vector2 dashDir = moveInput.normalized;
-
-        if (dashDir == Vector2.zero)
-        {
-            dashDir = new Vector2(moveInput.x > 0 ? 1f : -1f, 0f);
-        }
+        //Vector2 dashDir = moveInput.normalized;
+        Vector2 dashDir = direction.normalized;
+        //if (dashDir == Vector2.zero)
+        //{
+        //    dashDir = new Vector2(moveInput.x > 0 ? 1f : -1f, 0f);
+        //}
 
         rb.linearVelocity = dashDir * dashSpeed;
 
@@ -233,4 +237,3 @@ private void WallSlide()
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
     }
 }
-
