@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameTimer : MonoBehaviour
 {
@@ -64,6 +65,11 @@ public class GameTimer : MonoBehaviour
             Debug.Log("Ran out of time");
             timerLabel.text = "Ran out of time";
         }
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     // ---- MONOBEHAVIOUR ---- \\
