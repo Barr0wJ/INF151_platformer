@@ -10,7 +10,7 @@ public class MovementController : MonoBehaviour
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float jumpCutMultiplier = 0.5f; // Short jump on early button release
-    [SerializeField] private int maxExtraJumps = 1; // double jump
+    [SerializeField] private int maxExtraJumps = 0; // double jump
 
     [Header("Wall Jump Settings")]
     [SerializeField] private float wallJumpForce = 10f;
@@ -33,6 +33,12 @@ public class MovementController : MonoBehaviour
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.8f, 0.2f);
     [SerializeField] private LayerMask groundLayer;
 
+    [Header ("Wall Check")]
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 1.75f);
+    [SerializeField] private LayerMask wallLayer;
+
+
     public bool movementEnabled = true;
 
     private PlayerBehaviour playerBehaviour;
@@ -52,14 +58,12 @@ public class MovementController : MonoBehaviour
 
 private bool IsTouchingWall()
 {
-    direction = new Vector2(moveInput.x, 0f).normalized;
-    RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, wallCheckDistance, groundLayer);
-    return hit.collider != null;
+    return Physics2D.OverlapBox(wallCheck.position, wallCheckSize, 0f, wallLayer);
 }
 
 private void WallSlide()
     {
-        isWallSliding = !isGrounded && rb.linearVelocity.y <= 0f;
+        isWallSliding = IsTouchingWall() && rb.linearVelocity.y <= 0f;
         if (isWallSliding)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, -wallSlideSpeed);
@@ -90,9 +94,7 @@ private void WallSlide()
         {
             if (IsTouchingWall())
             {
-                remainingJumps = maxExtraJumps; // Reset remaining jumps on wall jump
-                isWallSliding = false;
-                isWallJumping = true;
+                WallSlide();
             }
             input.x += 1f;
         }
@@ -117,18 +119,18 @@ private void WallSlide()
         // Input.GetKeyDown
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            if (isWallSliding)
+            if (IsTouchingWall())
             {
-                remainingJumps = maxExtraJumps; // Reset remaining jumps on wall jump
                 isWallSliding = false;
                 isWallJumping = true;
 
-                HandleJump();
+                WallJump();
 
             }
             else
             {
                 HandleJump();
+
             }
         }
 
@@ -164,6 +166,12 @@ private void WallSlide()
     private void ExecuteJump()
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+    }
+
+    private void WallJump()
+    {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+
     }
 
     // ---- DASH ---- \\
@@ -207,6 +215,7 @@ private void WallSlide()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+            Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
         }
     }
 
