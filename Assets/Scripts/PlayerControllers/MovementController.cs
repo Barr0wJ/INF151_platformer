@@ -48,17 +48,22 @@ public class MovementController : MonoBehaviour
     private bool canDash = true;
     private float gravityScale;
 
+    private Vector2 direction;
+
 private bool IsTouchingWall()
 {
-    Vector2 direction = new Vector2(moveInput.x, 0f).normalized;
+    direction = new Vector2(moveInput.x, 0f).normalized;
     RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, wallCheckDistance, groundLayer);
     return hit.collider != null;
 }
 
 private void WallSlide()
     {
-        isWallSliding = true;
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlideSpeed, float.MaxValue));
+        isWallSliding = !isGrounded && rb.linearVelocity.y <= 0f;
+        if (isWallSliding)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -wallSlideSpeed);
+        }
 
     }
 
@@ -81,7 +86,16 @@ private void WallSlide()
 
         Vector2 input = Vector2.zero;
         if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) input.x -= 1f;
-        if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) input.x += 1f;
+        if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+        {
+            if (IsTouchingWall())
+            {
+                remainingJumps = maxExtraJumps; // Reset remaining jumps on wall jump
+                isWallSliding = false;
+                isWallJumping = true;
+            }
+            input.x += 1f;
+        }
         if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) input.y += 1f;
         if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) input.y -= 1f;
         moveInput = input;
@@ -103,7 +117,19 @@ private void WallSlide()
         // Input.GetKeyDown
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            HandleJump();
+            if (isWallSliding)
+            {
+                remainingJumps = maxExtraJumps; // Reset remaining jumps on wall jump
+                isWallSliding = false;
+                isWallJumping = true;
+
+                HandleJump();
+
+            }
+            else
+            {
+                HandleJump();
+            }
         }
 
         // Input.GetKeyUp
