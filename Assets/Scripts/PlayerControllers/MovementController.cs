@@ -35,8 +35,10 @@ public class MovementController : MonoBehaviour
     [SerializeField] private LayerMask obstacleLayer;
 
     [Header ("Wall Check")]
-    [SerializeField] private Transform wallCheck;
-    [SerializeField] private Vector2 wallCheckSize = new Vector2(0.2f, 1.75f);
+    [SerializeField] private Transform wallCheckRight;
+    [SerializeField] private Transform wallCheckLeft;
+    [SerializeField] private Vector2 wallCheckRightSize = new Vector2(0.2f, 1.75f);
+    [SerializeField] private Vector2 wallCheckLeftSize = new Vector2(0.2f, 1.75f);
     [SerializeField] private LayerMask wallLayer;
 
 
@@ -60,7 +62,7 @@ public class MovementController : MonoBehaviour
 
 private bool IsTouchingWall()
 {
-    return Physics2D.OverlapBox(wallCheck.position, wallCheckSize, 0f, wallLayer);
+    return Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer) || Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer);
 }
 
 private void WallSlide()
@@ -233,7 +235,8 @@ private void WallSlide()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
-            Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
+            Gizmos.DrawWireCube(wallCheckRight.position, wallCheckRightSize);
+            Gizmos.DrawWireCube(wallCheckLeft.position, wallCheckLeftSize);
         }
     }
 
