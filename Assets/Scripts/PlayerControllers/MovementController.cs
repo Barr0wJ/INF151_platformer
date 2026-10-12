@@ -212,8 +212,6 @@ private void WallSlide()
         if (groundCheck != null)
         {
             isObstructed = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, obstacleLayer);
-            Debug.Log(isObstructed);
-
         }
     }
 
