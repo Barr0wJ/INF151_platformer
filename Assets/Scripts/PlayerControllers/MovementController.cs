@@ -32,6 +32,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.8f, 0.2f);
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask obstacleLayer;
 
     [Header ("Wall Check")]
     [SerializeField] private Transform wallCheck;
@@ -126,6 +127,7 @@ private void WallSlide()
         {
             if (IsTouchingWall())
             {
+                Debug.Log("Wall Jump");
                 isWallSliding = false;
                 isWallJumping = true;
 
