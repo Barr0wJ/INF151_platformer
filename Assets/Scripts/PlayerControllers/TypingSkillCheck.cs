@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
+
 // handles the typing skill check
 // presumably called by PlayerBehaviour
 public class TypingSkillCheck : MonoBehaviour
@@ -24,14 +25,27 @@ public class TypingSkillCheck : MonoBehaviour
     private bool isActive = false;
     private float originalTimeScale; // probably 1 but just in case it isn't
 
+    private string[] TEMP_WORDS = {"hello", "world", "job", "informatics", "canvas", "unity"};
+
+
     public bool GetIsActive()
     {
         return isActive;
     }
 
-    public void StartSkillCheck(string word = "job")
+    public void StartSkillCheck(string word = null)
     {
-        targetWord = word.ToUpper();
+        if (string.IsNullOrWhiteSpace(word))
+        {
+            int randomInt = UnityEngine.Random.Range(0, TEMP_WORDS.Length);
+            targetWord = TEMP_WORDS[randomInt];
+        }
+        else
+        {
+            targetWord = word;
+        }
+
+        targetWord = targetWord.ToUpper();
         currentInput = "";
         
         timeLeft = timeLimit;
