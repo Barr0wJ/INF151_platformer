@@ -8,6 +8,8 @@ public class GameTimer : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerLabel;
     [SerializeField] private float time = 100; // seconds
 
+    private bool gameRunning = true;
+
 
     public float GetTime()
     {
@@ -37,10 +39,32 @@ public class GameTimer : MonoBehaviour
 
     private void ProcessRoundTimer()
     {
+        if (!gameRunning) return;
+
         time -= Time.deltaTime;
         timerLabel.text = GetClockTime();
+
+        if (time <= 0)
+        {
+            EndGame();
+        }
     }
 
+    public void EndGame(bool passed = false)
+    {
+        gameRunning = false;
+
+        if (passed)
+        {
+            Debug.Log("Passed!");
+            timerLabel.text = "You win! Final Time: " + GetClockTime();
+        } 
+        else
+        {
+            Debug.Log("Ran out of time");
+            timerLabel.text = "Ran out of time";
+        }
+    }
 
     // ---- MONOBEHAVIOUR ---- \\
 
