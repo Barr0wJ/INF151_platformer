@@ -67,7 +67,7 @@ private bool IsTouchingWall()
 
 private void WallSlide()
     {
-        if (isWallJumping) return;
+        //if (isWallJumping) return;
         isWallSliding = IsTouchingWall() && rb.linearVelocity.y <= 0f;
         if (isWallSliding)
         {
@@ -78,7 +78,6 @@ private void WallSlide()
     private void ProcessInput()
     {
         if (isDashing) return;
-
         if (!movementEnabled)
         {
             moveInput = Vector2.zero;
@@ -93,15 +92,24 @@ private void WallSlide()
         // method 1: (works)
 
         Vector2 input = Vector2.zero;
-        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) input.x -= 1f;
+        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+        {
+            if (IsTouchingWall())
+            {
+                isWallSliding = false;
+            }
+            input.x -= 1f;
+        }
+
         if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
         {
             if (IsTouchingWall())
             {
-                WallSlide();
+                isWallSliding = false;
             }
             input.x += 1f;
         }
+
         if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) input.y += 1f;
         if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) input.y -= 1f;
         moveInput = input;
@@ -129,10 +137,9 @@ private void WallSlide()
         {
             if (IsTouchingWall())
             {
-                Debug.Log("Wall Jump");
-
+                Debug.Log(isWallSliding);
                 isWallJumping = true;
-                WallJump();
+                StartCoroutine(WallJump());
 
                 isWallSliding = false;
 
@@ -179,17 +186,34 @@ private void WallSlide()
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
     }
 
-    private void WallJump()
+    private IEnumerator WallJump()
     {
+        if (!isWallSliding)
+        {
+            yield break; // Exit if not wall sliding
+        }
+
+        isWallJumping = true;
         if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer))
         {
             Debug.Log("Wall Jump Right Wall");
-            rb.linearVelocity = new Vector2(-wallJumpForce, wallJumpForce);
+           // rb.gravityScale = 0f; // temporarily disable gravity
+            Vector2 jumpDirection = direction.normalized;
+
+            rb.linearVelocity = new Vector2((-jumpDirection.x) * wallJumpForce, wallJumpForce);
+
+            yield return new WaitForSeconds(wallJumpDuration);
+            //rb.gravityScale = gravityScale;
         }
         else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer))
         {
             Debug.Log("Wall Jump Left Wall");
-            rb.linearVelocity = new Vector2(wallJumpForce, wallJumpForce);
+           // rb.gravityScale = 0f; // temporarily disable gravity
+            Vector2 jumpDirection = direction.normalized;
+            rb.linearVelocity = new Vector2((-jumpDirection.x) * wallJumpForce, wallJumpForce);
+
+            yield return new WaitForSeconds(wallJumpDuration);
+            //rb.gravityScale = gravityScale;
         }
         isWallJumping = false;
 
