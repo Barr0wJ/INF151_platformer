@@ -59,6 +59,14 @@ public class PlayerBehaviour : MonoBehaviour
 
     }
 
+    private void ProcessHotkeys()
+    {
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            gameTimer.HandlePause();
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -71,5 +79,6 @@ public class PlayerBehaviour : MonoBehaviour
     void Update()
     {
         ProcessAdminControls();
+        ProcessHotkeys();
     }
 }

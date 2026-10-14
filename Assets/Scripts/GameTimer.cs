@@ -6,15 +6,28 @@ public class GameTimer : MonoBehaviour
 {
     public static GameTimer Instance { get; private set; } // allows GameTimer.Instance
     
+    [SerializeField] private GameObject pauseMenu;
     [SerializeField] private TextMeshProUGUI timerLabel;
     [SerializeField] private float time = 100; // seconds
 
     private bool gameRunning = true;
+    private float timeScale = 1; // way to keep track during pause menu
 
+    public bool IsPaused()
+    {
+        return gameRunning;
+    }
 
     public float GetTime()
     {
         return time;
+    }
+
+    public void SetTimeScale(float scale)
+    {
+        Time.timeScale = scale;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale; // default is 0.02
+        timeScale = scale;
     }
 
     // Returns in format: ss:ms
@@ -36,6 +49,30 @@ public class GameTimer : MonoBehaviour
     public void DecreaseTime(float value)
     {
         time -= value;
+    }
+
+
+    // ---- game menu ---- \\
+
+    public void HandlePause()
+    {
+
+        if (!gameRunning)
+        {
+            // disable pause ui
+            pauseMenu.SetActive(false);
+
+            // countdown probably
+            SetTimeScale(timeScale);
+        } else
+        {
+            // enable pause ui
+            pauseMenu.SetActive(true);
+            Time.timeScale = 0;
+            Time.fixedDeltaTime = 0;
+        }
+
+        gameRunning = !gameRunning;
     }
 
     private void ProcessRoundTimer()
@@ -69,6 +106,8 @@ public class GameTimer : MonoBehaviour
 
     public void RestartGame()
     {
+        timeScale = 1;
+        SetTimeScale(timeScale);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

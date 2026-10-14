@@ -52,8 +52,7 @@ public class TypingSkillCheck : MonoBehaviour
         isActive = true;
 
         originalTimeScale = Time.timeScale;
-        Time.timeScale = timeSlowFactor;
-        Time.fixedDeltaTime = 0.02f * Time.timeScale; // default is 0.02
+        gameTimer.SetTimeScale(timeSlowFactor);
 
         UpdateUI();
 
@@ -90,6 +89,8 @@ public class TypingSkillCheck : MonoBehaviour
 
     private void ProcessTimer()
     {
+        if (gameTimer.IsPaused()) return;
+
         timeLeft -= Time.unscaledDeltaTime;
 
         float abs = Mathf.Abs(timeLeft);
@@ -127,8 +128,7 @@ public class TypingSkillCheck : MonoBehaviour
     {
         isActive = false;
 
-        Time.timeScale = originalTimeScale;
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        gameTimer.SetTimeScale(originalTimeScale);
 
         if (Keyboard.current != null)
         {
