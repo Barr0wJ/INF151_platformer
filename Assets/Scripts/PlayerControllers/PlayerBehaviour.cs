@@ -9,10 +9,20 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] private TypingSkillCheck skillCheck;
 
+    [SerializeField] private string[] word_list;
+
+    [SerializeField] private Collider2D typing_box;
+
     private CameraController cameraController;
     private MovementController movementController;
     private GameTimer gameTimer;
-    
+
+    private void OnTriggerEnter2D(Collider2D typing_box)
+    {
+        int randomInt = UnityEngine.Random.Range(0, word_list.Length);
+        StartSkillCheck();
+    }
+
     private void StartSkillCheck()
     {
         if (skillCheck != null && !skillCheck.GetIsActive())
