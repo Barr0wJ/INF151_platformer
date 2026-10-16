@@ -5,10 +5,10 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour
 {
-    [SerializeField] private float baseMoveSpeed = 7.5f;
-    [SerializeField] private float maxMoveSpeed = 15f;
+    [SerializeField] private float baseMoveSpeed = 6.5f;
+    [SerializeField] private float maxMoveSpeed = 16f;
     [SerializeField] private float movementAcceleration = 8f;
-    [SerializeField] private float movementDeceleration = 12f;
+    [SerializeField] private float movementDeceleration = 4f;
 
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f;
@@ -43,8 +43,8 @@ public class MovementController : MonoBehaviour
     [Header ("Wall Check")]
     [SerializeField] private Transform wallCheckRight;
     [SerializeField] private Transform wallCheckLeft;
-    [SerializeField] private Vector2 wallCheckRightSize = new Vector2(0.2f, 1.75f);
-    [SerializeField] private Vector2 wallCheckLeftSize = new Vector2(0.2f, 1.75f);
+    [SerializeField] private Vector2 wallCheckRightSize = new Vector2(0.1f, 1.6f);
+    [SerializeField] private Vector2 wallCheckLeftSize = new Vector2(0.1f, 1.6f);
     [SerializeField] private LayerMask wallLayer;
 
 
@@ -325,7 +325,15 @@ public class MovementController : MonoBehaviour
         {
             float inputDirection = Mathf.Sign(moveInput.x);
             float speedInInputDirection = horizontalSpeed * inputDirection;
-            if (speedInInputDirection < targetMoveSpeed)
+            if (horizontalSpeed < baseMoveSpeed)
+            {
+                rb.AddForce(Vector2.right * inputDirection * baseMoveSpeed);
+            }
+            if (isGrounded&& (speedInInputDirection > baseMoveSpeed))
+            {
+                rb.AddForce(Vector2.right * -inputDirection * movementDeceleration * rb.mass);
+            }
+            else if (speedInInputDirection < targetMoveSpeed)
             {
                 float acceleration = Mathf.Min(
                     movementAcceleration,
@@ -333,5 +341,6 @@ public class MovementController : MonoBehaviour
                 rb.AddForce(Vector2.right * inputDirection * acceleration * rb.mass);
             }
         }
+        Debug.Log($"Horizontal Speed: {horizontalSpeed}, Target Move Speed: {targetMoveSpeed}");
     }
 }
