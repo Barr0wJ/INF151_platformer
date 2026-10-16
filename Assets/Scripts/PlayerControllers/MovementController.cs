@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 public class MovementController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 7.5f;
+    [SerializeField] private float maxMoveSpeed = 15f;
+    [SerializeField] private float movementAcceleration = 8f;
+    [SerializeField] private float movementDeceleration = 12f;
 
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f;
@@ -23,6 +26,9 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private float dashDur = 0.2f;
     [SerializeField] private float dashCooldown = 0.8f;
+    [SerializeField] private float dashMovementBoost = 0.5f;
+    [SerializeField] private float maxMovementMultiplier = 2f;
+    [SerializeField] private float movementBoostRecovery = 0.75f;
 
     [Header("Coyote Time")]
     [SerializeField] private float coyoteDur = 0.15f;
@@ -57,6 +63,7 @@ public class MovementController : MonoBehaviour
     private bool isDashing;
     private bool canDash = true;
     private float gravityScale;
+    private float movementMultiplier = 1f;
 
     private Vector2 direction = Vector2.right;
 
@@ -94,24 +101,21 @@ private void WallSlide()
         Vector2 input = Vector2.zero;
         if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
         {
-            if (IsTouchingWall())
-            {
-                isWallSliding = false;
-            }
             input.x -= 1f;
         }
 
         if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
         {
-            if (IsTouchingWall())
-            {
-                isWallSliding = false;
-            }
             input.x += 1f;
         }
-
-        if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) input.y += 1f;
-        if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) input.y -= 1f;
+        if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
+        {
+            input.y += 1f;
+        }
+        if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)
+        {
+            input.y -= 1f;
+        }
         moveInput = input;
         if (input.x != 0f)
         {
@@ -155,7 +159,8 @@ private void WallSlide()
         // Input.GetKeyUp
         if (Keyboard.current.spaceKey.wasReleasedThisFrame && rb.linearVelocity.y > 0)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+            float jumpCutImpulse = rb.linearVelocity.y * (jumpCutMultiplier - 1f) * rb.mass;
+            rb.AddForce(Vector2.up * jumpCutImpulse, ForceMode2D.Impulse);
         }
 
         // Input.GetKeyDown
@@ -183,7 +188,8 @@ private void WallSlide()
 
     private void ExecuteJump()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        float jumpImpulse = (jumpForce - rb.linearVelocity.y) * rb.mass;
+        rb.AddForce(Vector2.up * jumpImpulse, ForceMode2D.Impulse);
     }
 
     private IEnumerator WallJump()
@@ -200,7 +206,8 @@ private void WallSlide()
            // rb.gravityScale = 0f; // temporarily disable gravity
             Vector2 jumpDirection = direction.normalized;
 
-            rb.linearVelocity = new Vector2((-jumpDirection.x) * wallJumpForce, wallJumpForce);
+            Vector2 targetVelocity = new Vector2(-jumpDirection.x * wallJumpForce, wallJumpForce);
+            rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
 
             yield return new WaitForSeconds(wallJumpDuration);
             //rb.gravityScale = gravityScale;
@@ -210,7 +217,8 @@ private void WallSlide()
             Debug.Log("Wall Jump Left Wall");
            // rb.gravityScale = 0f; // temporarily disable gravity
             Vector2 jumpDirection = direction.normalized;
-            rb.linearVelocity = new Vector2((-jumpDirection.x) * wallJumpForce, wallJumpForce);
+            Vector2 targetVelocity = new Vector2(-jumpDirection.x * wallJumpForce, wallJumpForce);
+            rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
 
             yield return new WaitForSeconds(wallJumpDuration);
             //rb.gravityScale = gravityScale;
@@ -225,6 +233,9 @@ private void WallSlide()
     {
         canDash = false;
         isDashing = true;
+        movementMultiplier = Mathf.Min(
+            movementMultiplier + dashMovementBoost,
+            maxMovementMultiplier);
         rb.gravityScale = 0f; // temporarily disable gravity
 
         //Vector2 dashDir = moveInput.normalized;
@@ -234,7 +245,7 @@ private void WallSlide()
         //    dashDir = new Vector2(moveInput.x > 0 ? 1f : -1f, 0f);
         //}
 
-        rb.linearVelocity = dashDir * dashSpeed;
+        rb.AddForce(dashDir * dashSpeed * rb.mass, ForceMode2D.Impulse);
 
         yield return new WaitForSeconds(dashDur);
 
@@ -306,7 +317,28 @@ private void WallSlide()
             WallSlide();
         }
 
+        if (isGrounded && !isDashing)
+        {
+            movementMultiplier = Mathf.MoveTowards(
+                movementMultiplier,
+                1f,
+                movementBoostRecovery * Time.fixedDeltaTime);
+        }
+
         if (isDashing) return;
-        rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+        float horizontalSpeed = rb.linearVelocity.x;
+        float targetMoveSpeed = Mathf.Min(moveSpeed * movementMultiplier, maxMoveSpeed);
+        if (moveInput.x != 0f)
+        {
+            float inputDirection = Mathf.Sign(moveInput.x);
+            float speedInInputDirection = horizontalSpeed * inputDirection;
+            if (speedInInputDirection < targetMoveSpeed)
+            {
+                float acceleration = Mathf.Min(
+                    movementAcceleration,
+                    (targetMoveSpeed - speedInInputDirection) / Time.fixedDeltaTime);
+                rb.AddForce(Vector2.right * inputDirection * acceleration * rb.mass);
+            }
+        }
     }
 }
