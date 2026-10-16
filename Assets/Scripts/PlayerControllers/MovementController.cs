@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 7.5f;
+    [SerializeField] private float baseMoveSpeed = 7.5f;
     [SerializeField] private float maxMoveSpeed = 15f;
     [SerializeField] private float movementAcceleration = 8f;
     [SerializeField] private float movementDeceleration = 12f;
@@ -13,7 +13,7 @@ public class MovementController : MonoBehaviour
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float jumpCutMultiplier = 0.5f; // Short jump on early button release
-    [SerializeField] private int maxExtraJumps = 0; // double jump
+    [SerializeField] private int maxExtraJumps = 0;
 
     [Header("Wall Jump Settings")]
     [SerializeField] private float wallJumpForce = 5f;
@@ -66,21 +66,6 @@ public class MovementController : MonoBehaviour
     private float movementMultiplier = 1f;
 
     private Vector2 direction = Vector2.right;
-
-private bool IsTouchingWall()
-{
-    return Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer) || Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer);
-}
-
-private void WallSlide()
-    {
-        //if (isWallJumping) return;
-        isWallSliding = IsTouchingWall() && rb.linearVelocity.y <= 0f;
-        if (isWallSliding)
-        {
-            rb.linearVelocity = new Vector2(0, -wallSlideSpeed);
-        }
-    }
 
     private void ProcessInput()
     {
@@ -192,6 +177,22 @@ private void WallSlide()
         rb.AddForce(Vector2.up * jumpImpulse, ForceMode2D.Impulse);
     }
 
+    // ---- WALL JUMP ---- \\
+
+    private bool IsTouchingWall()
+    {
+        return Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer) || Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer);
+    }
+
+    private void WallSlide()
+    {
+        isWallSliding = IsTouchingWall() && rb.linearVelocity.y <= 0f;
+        if (isWallSliding)
+        {
+            rb.linearVelocity = new Vector2(0, -wallSlideSpeed);
+        }
+    }
+
     private IEnumerator WallJump()
     {
         if (!isWallSliding)
@@ -203,25 +204,23 @@ private void WallSlide()
         if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer))
         {
             Debug.Log("Wall Jump Right Wall");
-           // rb.gravityScale = 0f; // temporarily disable gravity
+
             Vector2 jumpDirection = direction.normalized;
 
             Vector2 targetVelocity = new Vector2(-jumpDirection.x * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
 
             yield return new WaitForSeconds(wallJumpDuration);
-            //rb.gravityScale = gravityScale;
         }
         else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer))
         {
             Debug.Log("Wall Jump Left Wall");
-           // rb.gravityScale = 0f; // temporarily disable gravity
+
             Vector2 jumpDirection = direction.normalized;
             Vector2 targetVelocity = new Vector2(-jumpDirection.x * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
 
             yield return new WaitForSeconds(wallJumpDuration);
-            //rb.gravityScale = gravityScale;
         }
         isWallJumping = false;
 
@@ -256,6 +255,8 @@ private void WallSlide()
         canDash = true;
     }
 
+    // ---- CHECKS ---- \\
+
     private void CheckGrounded()
     {
         if (groundCheck != null)
@@ -275,9 +276,7 @@ private void WallSlide()
         }
     }
 
-
-
-    // For testing visualization
+    // ---- DEBUGGING -- \\
     private void OnDrawGizmosSelected()
     {
         if (groundCheck != null)
@@ -288,6 +287,8 @@ private void WallSlide()
             Gizmos.DrawWireCube(wallCheckLeft.position, wallCheckLeftSize);
         }
     }
+
+    // ---- RUNTIEME METHODS ---- \\
 
     private void Awake()
     {
@@ -317,17 +318,9 @@ private void WallSlide()
             WallSlide();
         }
 
-        if (isGrounded && !isDashing)
-        {
-            movementMultiplier = Mathf.MoveTowards(
-                movementMultiplier,
-                1f,
-                movementBoostRecovery * Time.fixedDeltaTime);
-        }
-
         if (isDashing) return;
         float horizontalSpeed = rb.linearVelocity.x;
-        float targetMoveSpeed = Mathf.Min(moveSpeed * movementMultiplier, maxMoveSpeed);
+        float targetMoveSpeed = Mathf.Min(baseMoveSpeed * movementMultiplier, maxMoveSpeed);
         if (moveInput.x != 0f)
         {
             float inputDirection = Mathf.Sign(moveInput.x);
@@ -336,7 +329,7 @@ private void WallSlide()
             {
                 float acceleration = Mathf.Min(
                     movementAcceleration,
-                    (targetMoveSpeed - speedInInputDirection) / Time.fixedDeltaTime);
+                    (targetMoveSpeed - speedInInputDirection) / Time.fixedDeltaTime);// Calculate the required acceleration to reach the target speed
                 rb.AddForce(Vector2.right * inputDirection * acceleration * rb.mass);
             }
         }
