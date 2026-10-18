@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private float baseMoveSpeed = 6.5f;
     [SerializeField] private float maxMoveSpeed = 16f;
     [SerializeField] private float movementAcceleration = 8f;
@@ -105,6 +106,15 @@ public class MovementController : MonoBehaviour
         if (input.x != 0f)
         {
             direction = new Vector2(Mathf.Sign(input.x), 0f);
+
+            if (direction.x > 0)
+            {
+                sprite.flipX = true;
+            } else
+            {
+                sprite.flipX = false;
+            }
+
         }
 
         // method 2 requires using something called an InputActionEvent. If someone wants to take the time to
