@@ -19,7 +19,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D typing_box)
     {
-        if (typing_box.gameObject.CompareTag("Trigger")) {
+        if (typing_box.gameObject.layer == 8) {
         int randomInt = UnityEngine.Random.Range(0, word_list.Length);
         StartSkillCheck();
         }
