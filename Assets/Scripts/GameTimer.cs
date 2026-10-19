@@ -15,8 +15,10 @@ public class GameTimer : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private TextMeshProUGUI timerLabel;
     [SerializeField] private float time = 100; // seconds
+    private float maxTime;
 
     private bool gameRunning = true;
+    private bool gameEnd = false; // we are sooooo inefficient
     private float timeScale = 1; // way to keep track during pause menu
 
     public bool IsPaused()
@@ -49,7 +51,13 @@ public class GameTimer : MonoBehaviour
 
     public void IncreaseTime(float value)
     {
-        time += value;
+        if (time + value <= maxTime)
+        {
+            time += value;
+        } else
+        {
+            time = maxTime;
+        }
     }
 
     public void DecreaseTime(float value)
@@ -84,6 +92,7 @@ public class GameTimer : MonoBehaviour
     private void ProcessRoundTimer()
     {
         if (!gameRunning) return;
+        if (gameEnd) return;
 
         time -= Time.deltaTime;
         timerLabel.text = GetClockTime();
@@ -96,7 +105,7 @@ public class GameTimer : MonoBehaviour
 
     public void EndGame(bool passed = false)
     {
-        gameRunning = false;
+        gameEnd = true;
         string[] previousHighScores = RetrieveHighScores();
         bool isNewHighScore = passed &&
             (previousHighScores.Length == 0 ||
@@ -299,7 +308,7 @@ public class GameTimer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        maxTime = time;
     }
 
     // Update is called once per frame
