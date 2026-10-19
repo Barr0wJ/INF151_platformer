@@ -62,13 +62,13 @@ public class CameraController : MonoBehaviour
     public void ZoomIn()
     {
         targetFOV = minFOV;
-        offset = new Vector3(zoomXOffset, 0, -10);
+        offset = new Vector3(zoomXOffset, 0, offset.z);
     }
 
     public void ZoomOut()
     {
         targetFOV = maxFOV;
-        offset = new Vector3(0, 0, -10);
+        offset = new Vector3(0, 0, offset.z);
     }
 
     // ---- MONOBEHAVIOUR ---- \\
