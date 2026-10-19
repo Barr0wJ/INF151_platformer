@@ -17,6 +17,7 @@ public class GameTimer : MonoBehaviour
     [SerializeField] private float time = 100; // seconds
 
     private bool gameRunning = true;
+    private bool gameEnd = false; // we are sooooo inefficient
     private float timeScale = 1; // way to keep track during pause menu
 
     public bool IsPaused()
@@ -84,6 +85,7 @@ public class GameTimer : MonoBehaviour
     private void ProcessRoundTimer()
     {
         if (!gameRunning) return;
+        if (gameEnd) return;
 
         time -= Time.deltaTime;
         timerLabel.text = GetClockTime();
@@ -96,7 +98,7 @@ public class GameTimer : MonoBehaviour
 
     public void EndGame(bool passed = false)
     {
-        gameRunning = false;
+        gameEnd = true;
         string[] previousHighScores = RetrieveHighScores();
         bool isNewHighScore = passed &&
             (previousHighScores.Length == 0 ||
