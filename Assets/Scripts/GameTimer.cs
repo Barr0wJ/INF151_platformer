@@ -21,7 +21,7 @@ public class GameTimer : MonoBehaviour
 
     public bool IsPaused()
     {
-        return gameRunning;
+        return !gameRunning;
     }
 
     public float GetTime()
