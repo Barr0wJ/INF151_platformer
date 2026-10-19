@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22c3378d2a2ab2d448a4633f71abcc27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBehaviour
-  enableAdminKeybinds: 0
+  enableAdminKeybinds: 1
   skillCheck: {fileID: 986914632}
   word_list: []
   typing_box: {fileID: 1148628923154676128, guid: 0e11a6603ae065b41a9cc06cae649474, type: 3}
@@ -19356,7 +19356,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -63, y: -115.6}
+  m_AnchoredPosition: {x: -280, y: -297.7}
   m_SizeDelta: {x: 1451.724, y: 580.4878}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &948694964
@@ -19445,7 +19445,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -925.0037, y: 0, z: -423.16406, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -20024,7 +20024,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -22.6, y: -50.1}
+  m_AnchoredPosition: {x: -223, y: -240}
   m_SizeDelta: {x: 1451.7245, y: 580.4878}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1356107569
@@ -20113,7 +20113,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -977.5458, y: 0, z: -96.4617, w: 0}
+  m_margin: {x: -1942.229, y: 0, z: -96.4617, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -20642,7 +20642,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -74.7, y: 30.5}
+  m_AnchoredPosition: {x: -81, y: 17}
   m_SizeDelta: {x: 1019.8456, y: 459.174}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1884001071
