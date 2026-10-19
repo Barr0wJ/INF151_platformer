@@ -131,10 +131,10 @@ public class MovementController : MonoBehaviour
             coyoteCounter -= Time.deltaTime;
         }
 
-        // Input.GetKeyDown
+        // Input.GetKeyDown Ground and Wall Check
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            if (IsTouchingWall())
+            if (IsTouchingWall() && !(isGrounded))
             {
                 Debug.Log(isWallSliding);
                 isWallJumping = true;
@@ -217,7 +217,7 @@ public class MovementController : MonoBehaviour
 
             Vector2 jumpDirection = direction.normalized;
 
-            Vector2 targetVelocity = new Vector2(-jumpDirection.x * wallJumpForce, wallJumpForce);
+            Vector2 targetVelocity = new Vector2(-1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
 
             yield return new WaitForSeconds(wallJumpDuration);
@@ -227,7 +227,7 @@ public class MovementController : MonoBehaviour
             Debug.Log("Wall Jump Left Wall");
 
             Vector2 jumpDirection = direction.normalized;
-            Vector2 targetVelocity = new Vector2(-jumpDirection.x * wallJumpForce, wallJumpForce);
+            Vector2 targetVelocity = new Vector2(1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
 
             yield return new WaitForSeconds(wallJumpDuration);
