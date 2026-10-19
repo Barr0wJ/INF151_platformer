@@ -232,6 +232,7 @@ public class MovementController : MonoBehaviour
 
             yield return new WaitForSeconds(wallJumpDuration);
         }
+        canDash = true; // Allow dashing after wall jump
         isWallJumping = false;
 
     }
@@ -351,6 +352,6 @@ public class MovementController : MonoBehaviour
                 rb.AddForce(Vector2.right * inputDirection * acceleration * rb.mass);
             }
         }
-        Debug.Log($"Horizontal Speed: {horizontalSpeed}, Target Move Speed: {targetMoveSpeed}");
+        //Debug.Log($"Horizontal Speed: {horizontalSpeed}, Target Move Speed: {targetMoveSpeed}");
     }
 }
