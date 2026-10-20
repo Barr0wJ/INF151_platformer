@@ -316,6 +316,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e11a6603ae065b41a9cc06cae649474, type: 3}
+--- !u!1 &90104310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 90104311}
+  m_Layer: 0
+  m_Name: PlaceHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &90104311
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90104310}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 218.9, y: 3.53447, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &382779793
 GameObject:
   m_ObjectHideFlags: 0
@@ -20911,7 +20942,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 200
+  m_fontSize: 190.25
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -21282,6 +21313,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1703485423}
+  - component: {fileID: 1703485424}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -21312,6 +21344,59 @@ Transform:
   - {fileID: 963789533}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1703485424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703485422}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e06cb894aee928d4690f10ac0aafb402, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundManager
+  xBounds:
+    lowerBound: 0
+    upperBound: 0
+  lowestY: 0
+  layers:
+  - baseLayer: {fileID: 0}
+    spawnableElements: []
+    ySpawnRange:
+      lowerBound: 0
+      upperBound: 0
+    scaleRange:
+      lowerBound: 0
+      upperBound: 0
+    spawnAmount:
+      lowerBound: 0
+      upperBound: 0
+    orderInLayer: 0
+  - baseLayer: {fileID: 0}
+    spawnableElements: []
+    ySpawnRange:
+      lowerBound: 0
+      upperBound: 0
+    scaleRange:
+      lowerBound: 0
+      upperBound: 0
+    spawnAmount:
+      lowerBound: 0
+      upperBound: 0
+    orderInLayer: 0
+  - baseLayer: {fileID: 0}
+    spawnableElements: []
+    ySpawnRange:
+      lowerBound: 0
+      upperBound: 0
+    scaleRange:
+      lowerBound: 0
+      upperBound: 0
+    spawnAmount:
+      lowerBound: 0
+      upperBound: 0
+    orderInLayer: 0
 --- !u!1 &1847723400
 GameObject:
   m_ObjectHideFlags: 0
@@ -22842,3 +22927,4 @@ SceneRoots:
   - {fileID: 82555623}
   - {fileID: 1295400345}
   - {fileID: 1703485423}
+  - {fileID: 90104311}
