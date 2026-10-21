@@ -135,20 +135,14 @@ public class MovementController : MonoBehaviour
         // Input.GetKeyDown Ground and Wall Check
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            if (IsTouchingWall() && !(isGrounded))
+            if (IsTouchingWall() && !isGrounded)
             {
                 Debug.Log(isWallSliding);
-                isWallJumping = true;
                 StartCoroutine(WallJump());
-
-                isWallSliding = false;
-
-
             }
             else
             {
                 HandleJump();
-
             }
         }
 
@@ -197,7 +191,8 @@ public class MovementController : MonoBehaviour
 
     private void WallSlide()
     {
-        isWallSliding = IsTouchingWall() && rb.linearVelocity.y <= 0f;
+        // Removed "IsTouchingWall() && " since its already checked in update
+        isWallSliding = rb.linearVelocity.y <= 0f;
         if (isWallSliding)
         {
             rb.linearVelocity = new Vector2(0, -wallSlideSpeed);
@@ -206,7 +201,7 @@ public class MovementController : MonoBehaviour
 
     private IEnumerator WallJump()
     {
-        if (!isWallSliding)
+        if (!isWallSliding || isGrounded)
         {
             yield break; // Exit if not wall sliding
         }
@@ -276,7 +271,7 @@ public class MovementController : MonoBehaviour
         // if there is ever an issue with lastJumpDir, add an extra condition that
         // checks the normal of the collider and makes sure its facing upwards
         Collider2D hit = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
-        isGrounded = hit != null && !isWallSliding;
+        isGrounded = hit != null;
 
         if (isGrounded)
         {
@@ -320,12 +315,13 @@ public class MovementController : MonoBehaviour
     private void Update()
     {
         ProcessInput();
+        CheckGrounded();
+        CheckObstacle();
     }
 
     private void FixedUpdate()
     {
-        CheckGrounded();
-        CheckObstacle();
+        
         if (isObstructed)
         {   // Destroys the script within the player object, might want to change to something else later
             playerBehaviour.RestartGame(5f);
@@ -333,9 +329,12 @@ public class MovementController : MonoBehaviour
             rb.freezeRotation = false;
         }
 
-        if (IsTouchingWall())
+        if (IsTouchingWall() && !isGrounded)
         {
             WallSlide();
+        } else
+        {
+            isWallSliding = false;
         }
 
         if (isDashing) return;
