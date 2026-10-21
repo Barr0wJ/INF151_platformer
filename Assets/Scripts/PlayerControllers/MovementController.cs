@@ -37,7 +37,7 @@ public class MovementController : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private Vector2 groundCheckSize = new Vector2(0.8f, 0.2f);
+    [SerializeField] private Vector2 groundCheckSize = new Vector2(0.6f, 0.2f);
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask obstacleLayer;
 
@@ -57,6 +57,7 @@ public class MovementController : MonoBehaviour
     private bool isGrounded;
     private bool isObstructed;
     private int remainingJumps;
+    private int lastJumpDir = 0; // 0 = none, -1 = left, 1 = right
 
     private bool isWallSliding;
     private bool isWallJumping;
@@ -211,9 +212,10 @@ public class MovementController : MonoBehaviour
         }
 
         isWallJumping = true;
-        if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer))
+        if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer) && lastJumpDir != 1)
         {
             Debug.Log("Wall Jump Right Wall");
+            lastJumpDir = 1;
 
             Vector2 jumpDirection = direction.normalized;
 
@@ -222,9 +224,10 @@ public class MovementController : MonoBehaviour
 
             yield return new WaitForSeconds(wallJumpDuration);
         }
-        else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer))
+        else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer) && lastJumpDir != -1)
         {
             Debug.Log("Wall Jump Left Wall");
+            lastJumpDir = -1;
 
             Vector2 jumpDirection = direction.normalized;
             Vector2 targetVelocity = new Vector2(1 * wallJumpForce, wallJumpForce);
@@ -270,9 +273,15 @@ public class MovementController : MonoBehaviour
 
     private void CheckGrounded()
     {
-        if (groundCheck != null)
+        // if there is ever an issue with lastJumpDir, add an extra condition that
+        // checks the normal of the collider and makes sure its facing upwards
+        Collider2D hit = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
+        isGrounded = hit != null && !isWallSliding;
+
+        if (isGrounded)
         {
-            isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
+            isWallSliding = false; 
+            lastJumpDir = 0;
         }
     }
 

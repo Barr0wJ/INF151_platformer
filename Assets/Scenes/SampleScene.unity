@@ -170,7 +170,7 @@ MonoBehaviour:
   movementBoostRecovery: 0.75
   coyoteDur: 0.15
   groundCheck: {fileID: 2016166820}
-  groundCheckSize: {x: 0.8, y: 0.2}
+  groundCheckSize: {x: 0.6, y: 0.2}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -891,7 +891,7 @@ GameObject:
   m_Component:
   - component: {fileID: 570733894}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: PLACEHOLDER
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -906,7 +906,7 @@ Transform:
   m_GameObject: {fileID: 570733893}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.76568, y: 3.24995, z: 0}
+  m_LocalPosition: {x: 32.4, y: -5.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20629,8 +20629,8 @@ Transform:
   m_GameObject: {fileID: 1421533690}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.97539, y: 2.4832704, z: 0}
-  m_LocalScale: {x: 1.3466699, y: 1.0359, z: 1.0359}
+  m_LocalPosition: {x: 0, y: -1.6, z: 0}
+  m_LocalScale: {x: 2.0942063, y: 1.610928, z: 1.610928}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1703485423}
@@ -20942,7 +20942,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 190.25
+  m_fontSize: 200
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -21351,17 +21351,31 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1703485422}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e06cb894aee928d4690f10ac0aafb402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BackgroundManager
   xBounds:
-    lowerBound: 0
-    upperBound: 0
-  lowestY: 0
+    lowerBound: -13.5
+    upperBound: 219.5
+  lowestY: -11.7
   layers:
-  - baseLayer: {fileID: 0}
+  - baseLayer: {fileID: 444028362}
+    layerWidth: 36
+    spawnableElements: []
+    ySpawnRange:
+      lowerBound: 0
+      upperBound: 0
+    scaleRange:
+      lowerBound: 0
+      upperBound: 0
+    spawnAmount:
+      lowerBound: 0
+      upperBound: 0
+    orderInLayer: 0
+  - baseLayer: {fileID: 1421533692}
+    layerWidth: 58
     spawnableElements: []
     ySpawnRange:
       lowerBound: 0
@@ -21374,18 +21388,7 @@ MonoBehaviour:
       upperBound: 0
     orderInLayer: 0
   - baseLayer: {fileID: 0}
-    spawnableElements: []
-    ySpawnRange:
-      lowerBound: 0
-      upperBound: 0
-    scaleRange:
-      lowerBound: 0
-      upperBound: 0
-    spawnAmount:
-      lowerBound: 0
-      upperBound: 0
-    orderInLayer: 0
-  - baseLayer: {fileID: 0}
+    layerWidth: 20
     spawnableElements: []
     ySpawnRange:
       lowerBound: 0

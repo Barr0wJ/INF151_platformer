@@ -4,35 +4,25 @@ using UnityEngine;
 [Serializable]
 public class BackgroundLayer
 {
-    [SerializeField] private Transform baseLayer; // follows the camera's x position
+    [SerializeField] private Transform baseLayer; // The layer parent transform
 
     [SerializeField] private GameObject[] spawnableElements; // prefabs like trees
     [SerializeField] private Range ySpawnRange; // the y spawn range relative to the baseLayers position
     [SerializeField] private Range scaleRange;
     [SerializeField] private Range spawnAmount; // how many to spawn
     [SerializeField] private int orderInLayer;
-    
-    public void UpdateBaseLayer(float cameraXPos)
+
+    public void UpdateBaseLayer(float cameraXPos, Range xBounds)
     {
-        // move base layer based on camera's x position, but keeps the y value set initially in the scene
-        if (baseLayer)
-        {
-            baseLayer.position = new Vector2(cameraXPos, baseLayer.position.y);
-        }
+        if (!baseLayer) return;
+        // idk how to do this yet ill figure it out later
     }
 
     public void SpawnElements(Range xBounds)
     {
         if (spawnableElements.Length == 0) return;
 
-        // spawns elements randomly across the y-axis of baseLayer or 0
-        float y = 0;
-
-        if (baseLayer)
-        {
-            y = baseLayer.position.y;
-        }
-
+        float y = baseLayer ? baseLayer.position.y : 0f;
         int spawns = spawnAmount.GetRandomInt();
 
         for (int i = 0; i < spawns; i++)
@@ -46,7 +36,6 @@ public class BackgroundLayer
                 spawnPos,
                 Quaternion.identity
             ).transform.localScale = new Vector3(scale, scale, scale);
-
         }
     }
 }
@@ -55,14 +44,19 @@ public class BackgroundLayer
 public class BackgroundManager : MonoBehaviour
 {
     [Header("Bounds")]
-    [Tooltip("X bounds of the level, restricts the elements within these bounds")]
     [SerializeField] private Range xBounds;
     [SerializeField] private float lowestY;
 
     [Header("Objects")]
     [SerializeField] private BackgroundLayer[] layers;
 
-    private Camera camera;
+    private Camera cam;
+
+    private void Start()
+    {
+        cam = Camera.main;
+        SpawnAll();
+    }
 
     private void SpawnAll()
     {
@@ -74,23 +68,14 @@ public class BackgroundManager : MonoBehaviour
 
     private void ProcessBackground()
     {
-        float xPos = camera.transform.position.x;
+        float xPos = cam.transform.position.x;
 
         foreach (BackgroundLayer layer in layers)
         {
-            layer.UpdateBaseLayer(xPos);
+            layer.UpdateBaseLayer(xPos, xBounds);
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        camera = Camera.main;
-
-        SpawnAll();
-    }
-
-    // Update is called once per frame
     void Update()
     {
         ProcessBackground();
