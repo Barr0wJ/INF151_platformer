@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -47,6 +48,11 @@ public class MovementController : MonoBehaviour
     [SerializeField] private Vector2 wallCheckRightSize = new Vector2(0.1f, 1.6f);
     [SerializeField] private Vector2 wallCheckLeftSize = new Vector2(0.1f, 1.6f);
     [SerializeField] private LayerMask wallLayer;
+
+    [Header ("Particles")]
+    [SerializeField] private ParticleSet groundParticles; // activates when moving 
+    [SerializeField] private ParticleSet runParticles; // activates when vel >= x
+    private float runningVelocity = 4f;
 
 
     public bool movementEnabled = true;
@@ -111,9 +117,13 @@ public class MovementController : MonoBehaviour
             if (direction.x > 0)
             {
                 sprite.flipX = true;
+                runParticles.Flip(false);
+                groundParticles.Flip(false);
             } else
             {
                 sprite.flipX = false;
+                runParticles.Flip(true);
+                groundParticles.Flip(true);
             }
 
         }
@@ -122,14 +132,37 @@ public class MovementController : MonoBehaviour
         // learn how to link that up then cool
         // sorry for the technical debt
 
+        float xSpeed = Math.Abs(rb.linearVelocityX);
+        Debug.Log(xSpeed);
+
         if (isGrounded)
         {
             coyoteCounter = coyoteDur;
             remainingJumps = maxExtraJumps;
+
+            if (xSpeed > 0)
+            {
+                groundParticles.Play();
+            } 
+            else
+            {
+                groundParticles.Stop();
+            }
         }
         else
         {
             coyoteCounter -= Time.deltaTime;
+            groundParticles.Stop();
+            runParticles.Stop();
+        }
+
+        if (xSpeed >= runningVelocity) // probably inefficient
+        {
+            runParticles.Play();
+        }
+        else
+        {
+            runParticles.Stop();
         }
 
         // Input.GetKeyDown Ground and Wall Check
