@@ -24,6 +24,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float wallCheckDistance = 0.2f;
 
 
+
     [Header("Dash Settings")]
     [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private float dashDur = 0.2f;
@@ -69,6 +70,7 @@ public class MovementController : MonoBehaviour
     private bool isWallJumping;
 
     private bool isDashing;
+    private bool isSliding;
     private bool canDash = true;
     private float gravityScale;
     private float movementMultiplier = 1f;
@@ -178,6 +180,15 @@ public class MovementController : MonoBehaviour
                 HandleJump();
             }
         }
+
+        //slide on ctrl press
+        if (Keyboard.current.ctrlKey.wasPressedThisFrame && isGrounded){
+            isSliding = true;
+        }
+        if (Keyboard.current.ctrlKey.wasReleasedThisFrame && isGrounded){
+            isSliding = false;
+        }
+
 
         // Input.GetKeyUp
         if (Keyboard.current.spaceKey.wasReleasedThisFrame && rb.linearVelocity.y > 0)
@@ -371,8 +382,10 @@ public class MovementController : MonoBehaviour
         }
 
         if (isDashing) return;
+
         float horizontalSpeed = rb.linearVelocity.x;
         float targetMoveSpeed = Mathf.Min(baseMoveSpeed * movementMultiplier, maxMoveSpeed);
+
         if (moveInput.x != 0f)
         {
             float inputDirection = Mathf.Sign(moveInput.x);
@@ -381,7 +394,7 @@ public class MovementController : MonoBehaviour
             {
                 rb.AddForce(Vector2.right * inputDirection * baseMoveSpeed);
             }
-            if (isGrounded&& (speedInInputDirection > baseMoveSpeed))
+            if ((speedInInputDirection > baseMoveSpeed) && !isSliding)
             {
                 rb.AddForce(Vector2.right * -inputDirection * movementDeceleration * rb.mass);
             }
