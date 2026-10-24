@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f1f52acf7b71b78439b3b933e102bb86
+guid: 944329ad6ad5dfb409adae185a41ca36
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3045766227147039765
-    second: jungleback_0
+      213: -2014893925398777230
+    second: jungleback 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -102,7 +102,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: jungleback_0
+      name: jungleback 1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -117,8 +117,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bebd40ae0c34bb5d0800000000000000
-      internalID: -3045766227147039765
+      spriteID: 272738476a8a904e0800000000000000
+      internalID: -2014893925398777230
       vertices: []
       indices: 
       edges: []
@@ -137,7 +137,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      jungleback_0: -3045766227147039765
+      jungleback 1_0: -2014893925398777230
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

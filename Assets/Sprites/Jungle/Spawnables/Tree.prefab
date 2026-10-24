@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingOrder: -10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: bf58edb86f76ad843970cc8b567bf9f7, type: 3}
-  m_Color: {r: 0, g: 0.49685526, b: 0.43283302, a: 1}
+  m_Color: {r: 0, g: 0.7176471, b: 0.56078434, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -138,6 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf49891e8587cc548986dd03d1f43d42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TreeCreator
+  runOnStart: 1
   trunkRenderer: {fileID: 6406679865943860201}
   leafRenderer: {fileID: 424772273365818637}
   trunkSprites:
@@ -230,7 +231,7 @@ SpriteRenderer:
   m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: dc0d122baf7b1c7499fb677b94d74037, type: 3}
-  m_Color: {r: 0, g: 0.49685526, b: 0.43283302, a: 1}
+  m_Color: {r: 0, g: 0.7176471, b: 0.56078434, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
