@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class TreeRandomizer : SpriteRandomizer
 {
+    public bool runOnStart = true;
     public SpriteRenderer trunkRenderer;
     public SpriteRenderer leafRenderer;
 
     public Sprite[] trunkSprites;
     public Sprite[] leafSprites;
+
+    void Start()
+    {
+        if (runOnStart)
+            Randomize();
+    }
 
     public override void Randomize()
     {

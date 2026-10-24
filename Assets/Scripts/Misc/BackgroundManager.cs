@@ -5,6 +5,7 @@ using UnityEngine;
 public class BackgroundLayer
 {
     [SerializeField] private Transform baseLayer; // The layer parent transform
+    [SerializeField] private bool followY;
 
     [SerializeField] private GameObject[] spawnableElements; // prefabs like trees
     [SerializeField] private Range ySpawnRange; // the y spawn range relative to the baseLayers position
@@ -35,7 +36,7 @@ public class BackgroundLayer
             spriteRenderer.sortingOrder = orderInLayer;
     }
 
-    public void UpdateBaseLayer(float cameraXPos, Range xBounds)
+    public void UpdateBaseLayer(Range xBounds)
     {
         if (!baseLayer || !cam || !spriteRenderer)
             return;
@@ -47,8 +48,8 @@ public class BackgroundLayer
         float cameraTop = cam.transform.position.y + halfHeight;
         float cameraBottom = cam.transform.position.y - halfHeight;
 
-        if (cameraTop < layerBounds.min.y || cameraBottom > layerBounds.max.y)
-            return;
+        // if (cameraTop < layerBounds.min.y || cameraBottom > layerBounds.max.y)
+        //     return;
 
         // progress til end of level
         float progress = Mathf.InverseLerp(
@@ -70,8 +71,9 @@ public class BackgroundLayer
         );
 
         float offset = layerBounds.center.x - baseLayer.position.x;
-        Vector3 position = baseLayer.position;
+        Vector3 position = followY ? cam.transform.position : baseLayer.position;
         position.x = targetCenterX - offset;
+        position.z = baseLayer.position.z;
 
         baseLayer.position = position;
     }
@@ -169,7 +171,7 @@ public class BackgroundManager : MonoBehaviour
 
         foreach (BackgroundLayer layer in layers)
         {
-            layer.UpdateBaseLayer(xPos, xBounds);
+            layer.UpdateBaseLayer(xBounds);
         }
     }
 

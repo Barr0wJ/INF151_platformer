@@ -278,6 +278,7 @@ public class MovementController : MonoBehaviour
 
     private IEnumerator Dash()
     {
+        animationController.SetState(AnimationState.Run);
         canDash = false;
         isDashing = true;
         movementMultiplier = Mathf.Min(
