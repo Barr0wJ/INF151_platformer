@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class MovementController : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private AnimationController animationController;
     [SerializeField] private float baseMoveSpeed = 6.5f;
     [SerializeField] private float maxMoveSpeed = 16f;
     [SerializeField] private float movementAcceleration = 8f;
@@ -54,6 +55,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private ParticleSet groundParticles; // activates when moving 
     [SerializeField] private ParticleSet runParticles; // activates when vel >= x
     private float runningVelocity = 4f;
+    private float maxRunningSpeed = 10f; // don't change, for animations
 
 
     public bool movementEnabled = true;
@@ -86,13 +88,6 @@ public class MovementController : MonoBehaviour
             return;
         }
 
-        // so apparently this method is outdated in this unity version
-        // HOWEVER, there is an option to re-enable it, although it may cause issues
-        // moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-
-        // There are two methods, but im too lazy to learn how to do the second despite it being recommended
-        // method 1: (works)
-
         Vector2 input = Vector2.zero;
         if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
         {
@@ -112,43 +107,42 @@ public class MovementController : MonoBehaviour
             input.y -= 1f;
         }
         moveInput = input;
-        if (input.x != 0f)
+        if (input.x != 0f && !IsTouchingWall())
         {
             direction = new Vector2(Mathf.Sign(input.x), 0f);
 
             if (direction.x > 0)
             {
-                sprite.flipX = true;
-                runParticles.Flip(false);
-                groundParticles.Flip(false);
-            } else
-            {
                 sprite.flipX = false;
                 runParticles.Flip(true);
                 groundParticles.Flip(true);
+            } else
+            {
+                sprite.flipX = true;
+                runParticles.Flip(false);
+                groundParticles.Flip(false);
             }
 
         }
 
-        // method 2 requires using something called an InputActionEvent. If someone wants to take the time to
-        // learn how to link that up then cool
-        // sorry for the technical debt
-
         float xSpeed = Math.Abs(rb.linearVelocityX);
-        Debug.Log(xSpeed);
+        animationController.SetSpeed(xSpeed/maxRunningSpeed);
+        // Debug.Log(xSpeed);
 
         if (isGrounded)
         {
             coyoteCounter = coyoteDur;
             remainingJumps = maxExtraJumps;
 
-            if (xSpeed > 0)
+            if (xSpeed > 1f)
             {
                 groundParticles.Play();
+                animationController.SetState(AnimationState.Run);
             } 
             else
             {
                 groundParticles.Stop();
+                animationController.SetState(AnimationState.Idle);
             }
         }
         else
@@ -240,6 +234,7 @@ public class MovementController : MonoBehaviour
         if (isWallSliding)
         {
             rb.linearVelocity = new Vector2(0, -wallSlideSpeed);
+            animationController.SetState(AnimationState.WallSlide);
         }
     }
 

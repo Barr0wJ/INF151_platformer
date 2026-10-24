@@ -12,30 +12,126 @@ public class BackgroundLayer
     [SerializeField] private Range spawnAmount; // how many to spawn
     [SerializeField] private int orderInLayer;
 
-    public void UpdateBaseLayer(float cameraXPos, Range xBounds)
+    private Camera cam;
+    private SpriteRenderer spriteRenderer;
+    private float halfHeight;
+    private float halfWidth;
+
+    public void Initialize(Camera cam)
     {
-        if (!baseLayer) return;
-        // idk how to do this yet ill figure it out later
+        this.cam = cam;
+        halfHeight = cam.orthographicSize;
+        halfWidth = halfHeight * cam.aspect;
+
+        if (!baseLayer)
+            return;
+
+        spriteRenderer = baseLayer.GetComponent<SpriteRenderer>();
+
+        if (!spriteRenderer)
+            spriteRenderer = baseLayer.GetComponentInChildren<SpriteRenderer>();
+
+        if (spriteRenderer)
+            spriteRenderer.sortingOrder = orderInLayer;
     }
 
-    public void SpawnElements(Range xBounds)
+    public void UpdateBaseLayer(float cameraXPos, Range xBounds)
     {
-        if (spawnableElements.Length == 0) return;
+        if (!baseLayer || !cam || !spriteRenderer)
+            return;
 
-        float y = baseLayer ? baseLayer.position.y : 0f;
+        float minX = xBounds.lowerBound;
+        float maxX = xBounds.upperBound;
+
+        Bounds layerBounds = spriteRenderer.bounds;
+        float cameraTop = cam.transform.position.y + halfHeight;
+        float cameraBottom = cam.transform.position.y - halfHeight;
+
+        if (cameraTop < layerBounds.min.y || cameraBottom > layerBounds.max.y)
+            return;
+
+        // progress til end of level
+        float progress = Mathf.InverseLerp(
+            minX,
+            maxX,
+            cam.transform.position.x
+        );
+
+
+        float layerWidth = layerBounds.size.x;
+
+        float leftCenter = minX - halfWidth + layerWidth * 0.5f;
+        float rightCenter = maxX + halfWidth - layerWidth * 0.5f;
+
+        float targetCenterX = Mathf.Lerp(
+            leftCenter,
+            rightCenter,
+            progress
+        );
+
+        float offset = layerBounds.center.x - baseLayer.position.x;
+        Vector3 position = baseLayer.position;
+        position.x = targetCenterX - offset;
+
+        baseLayer.position = position;
+    }
+
+    public void SpawnElements()
+    {
+        if (spawnableElements == null || spawnableElements.Length == 0)
+            return;
+
+        float baseY = baseLayer ? baseLayer.position.y : 0f;
+        float baseZ = baseLayer ? baseLayer.position.z : 0f;
+
         int spawns = spawnAmount.GetRandomInt();
+        Bounds layerBounds = spriteRenderer.bounds;
+        Range range = new Range(layerBounds.min.x, layerBounds.max.x);
 
         for (int i = 0; i < spawns; i++)
         {
+            float x = range.GetRandomFloat();
             float yOffset = ySpawnRange.GetRandomFloat();
-            Vector2 spawnPos = new Vector2(xBounds.GetRandomFloat(), y + yOffset);
             float scale = scaleRange.GetRandomFloat();
+
+            Vector3 spawnPos = new Vector3(
+                x,
+                baseY + yOffset,
+                baseZ
+            );
+
+            int prefabIndex = UnityEngine.Random.Range(
+                0,
+                spawnableElements.Length
+            );
+
+            GameObject prefab = spawnableElements[prefabIndex];
+
+            if (!prefab)
+                continue;
             
-            GameObject.Instantiate(
-                spawnableElements[(int) UnityEngine.Random.Range(0, spawnableElements.Length)],
+            GameObject obj = GameObject.Instantiate(
+                prefab,
                 spawnPos,
-                Quaternion.identity
-            ).transform.localScale = new Vector3(scale, scale, scale);
+                Quaternion.identity,
+                baseLayer
+            );
+
+            obj.transform.localScale = Vector3.one * scale;
+            SpriteRandomizer randomizer;
+
+            if (obj.TryGetComponent<SpriteRandomizer>(out randomizer))
+            {
+                randomizer.Randomize();
+            }
+            
+
+            // SpriteRenderer[] renderers = obj.GetComponentsInChildren<SpriteRenderer>(true);
+
+            // foreach (SpriteRenderer renderer in renderers)
+            // {
+            //     renderer.sortingOrder = orderInLayer + 1;
+            // }
         }
     }
 }
@@ -62,7 +158,8 @@ public class BackgroundManager : MonoBehaviour
     {
         foreach (BackgroundLayer layer in layers)
         {
-            layer.SpawnElements(xBounds);
+            layer.Initialize(cam);
+            layer.SpawnElements();
         }
     }
 
