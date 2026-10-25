@@ -73,15 +73,54 @@ public class MovementController : MonoBehaviour
 
     private bool isDashing;
     private bool isSliding;
+    private bool isZiplining;
+    private Zipline activeZipline;
     private bool canDash = true;
     private float gravityScale;
     private float movementMultiplier = 1f;
 
     private Vector2 direction = Vector2.right;
 
+    public bool IsDashing => isDashing;
+    public float DashSpeed => dashSpeed;
+    public float NormalGravityScale => gravityScale;
+
+    public void AttachToZipline(Zipline zipline)
+    {
+        activeZipline = zipline;
+        isZiplining = true;
+        moveInput = Vector2.zero;
+        coyoteCounter = 0f;
+        rb.gravityScale = 0f;
+    }
+
+    public void SetZiplineActive(bool active)
+    {
+        isZiplining = active;
+        if (active)
+        {
+            moveInput = Vector2.zero;
+            rb.gravityScale = 0f;
+        }
+        else
+        {
+            activeZipline = null;
+            rb.gravityScale = gravityScale;
+        }
+    }
+
     private void ProcessInput()
     {
         if (isDashing) return;
+        if (isZiplining)
+        {
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                JumpOffZipline();
+            }
+            return;
+        }
+
         if (!movementEnabled)
         {
             moveInput = Vector2.zero;
@@ -196,6 +235,19 @@ public class MovementController : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
+    }
+
+    private void JumpOffZipline()
+    {
+        if (activeZipline == null || !activeZipline.TryDetachRider(this, out Vector2 exitVelocity))
+        {
+            return;
+        }
+
+        SetZiplineActive(false);
+        rb.linearVelocity = new Vector2(
+            exitVelocity.x,
+            Mathf.Max(exitVelocity.y, jumpForce));
     }
 
     // ---- JUMP ---- \\
@@ -361,13 +413,14 @@ public class MovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
         if (isObstructed)
         {   // Destroys the script within the player object, might want to change to something else later
             playerBehaviour.RestartGame(5f);
             GameObject.Destroy(this);
             rb.freezeRotation = false;
         }
+
+        if (isZiplining) return;
 
         if (IsTouchingWall() && !isGrounded)
         {
