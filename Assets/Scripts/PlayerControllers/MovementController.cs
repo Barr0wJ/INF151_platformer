@@ -126,6 +126,7 @@ public class MovementController : MonoBehaviour
         }
 
         float xSpeed = Math.Abs(rb.linearVelocityX);
+        float ySpeed = Math.Abs(rb.linearVelocityY);
         animationController.SetSpeed(xSpeed/maxRunningSpeed);
         // Debug.Log(xSpeed);
 
@@ -137,16 +138,25 @@ public class MovementController : MonoBehaviour
             if (xSpeed > 1f)
             {
                 groundParticles.Play();
-                animationController.SetState(AnimationState.Run);
+                
+                if (ySpeed <= 0.5f)
+                {
+                    animationController.SetState(AnimationState.Run);
+                }
             } 
             else
             {
                 groundParticles.Stop();
-                animationController.SetState(AnimationState.Idle);
+                
+                if (ySpeed <= 0.5f)
+                {
+                    animationController.SetState(AnimationState.Idle);
+                }
             }
         }
         else
         {
+            // animationController.SetState(AnimationState.Fall);
             coyoteCounter -= Time.deltaTime;
             groundParticles.Stop();
             runParticles.Stop();
@@ -161,12 +171,12 @@ public class MovementController : MonoBehaviour
             runParticles.Stop();
         }
 
-        // Input.GetKeyDown Ground and Wall Check
+        // Jump (max height)
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             if (IsTouchingWall() && !isGrounded)
             {
-                Debug.Log(isWallSliding);
+                // Debug.Log(isWallSliding);
                 StartCoroutine(WallJump());
             }
             else
@@ -184,9 +194,10 @@ public class MovementController : MonoBehaviour
         }
 
 
-        // Input.GetKeyUp
+        // Jump (soft jump)
         if (Keyboard.current.spaceKey.wasReleasedThisFrame && rb.linearVelocity.y > 0)
         {
+            animationController.SetState(AnimationState.Jump);
             float jumpCutImpulse = rb.linearVelocity.y * (jumpCutMultiplier - 1f) * rb.mass;
             rb.AddForce(Vector2.up * jumpCutImpulse, ForceMode2D.Impulse);
         }
@@ -216,6 +227,7 @@ public class MovementController : MonoBehaviour
 
     private void ExecuteJump()
     {
+        animationController.SetState(AnimationState.Jump);
         float jumpImpulse = (jumpForce - rb.linearVelocity.y) * rb.mass;
         rb.AddForce(Vector2.up * jumpImpulse, ForceMode2D.Impulse);
     }
@@ -244,7 +256,7 @@ public class MovementController : MonoBehaviour
         {
             yield break; // Exit if not wall sliding
         }
-
+        
         isWallJumping = true;
         if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer) && lastJumpDir != 1)
         {
@@ -255,6 +267,7 @@ public class MovementController : MonoBehaviour
 
             Vector2 targetVelocity = new Vector2(-1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
+            animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
         }
@@ -266,6 +279,7 @@ public class MovementController : MonoBehaviour
             Vector2 jumpDirection = direction.normalized;
             Vector2 targetVelocity = new Vector2(1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
+            animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
         }

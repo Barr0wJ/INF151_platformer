@@ -5,14 +5,16 @@ public enum AnimationState
     Idle,
     Run,
     Jump,
-    WallSlide
+    WallSlide,
+    Fall
 }
 
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
 public class AnimationController : MonoBehaviour
 {
     private Animator animator;
-    private SpriteRenderer spriteRenderer;   
+    private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rb;
 
     private AnimationState currentState;
 
@@ -22,6 +24,7 @@ public class AnimationController : MonoBehaviour
 
         animator.Play(newState.ToString());
         currentState = newState;
+        Debug.Log("Setting State: " + newState.ToString());
     }
 
     public void SetSpeed(float speedMultiplier)
@@ -33,5 +36,14 @@ public class AnimationController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponentInParent<Rigidbody2D>();
+    }
+
+    void Update()
+    {
+        if (rb.linearVelocity.y < 0) 
+        {
+            animator.SetTrigger("Falling");
+        }
     }
 }
