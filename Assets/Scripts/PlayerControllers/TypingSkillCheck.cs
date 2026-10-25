@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
@@ -25,7 +27,7 @@ public class TypingSkillCheck : MonoBehaviour
     private bool isActive = false;
     private float originalTimeScale; // probably 1 but just in case it isn't
 
-    private string[] TEMP_WORDS = {"hello", "world", "job", "informatics", "canvas", "unity"};
+    private string[] easyWords = new string[0];
 
 
     public bool GetIsActive()
@@ -37,8 +39,14 @@ public class TypingSkillCheck : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(word))
         {
-            int randomInt = UnityEngine.Random.Range(0, TEMP_WORDS.Length);
-            targetWord = TEMP_WORDS[randomInt];
+            if (easyWords.Length == 0)
+            {
+                Debug.LogError("No words were found in the Easy column of TypingSkillCheckWords.csv.", this);
+                return;
+            }
+
+            int randomInt = Random.Range(0, easyWords.Length);
+            targetWord = easyWords[randomInt];
         }
         else
         {
@@ -158,6 +166,88 @@ public class TypingSkillCheck : MonoBehaviour
         gameTimer = GameTimer.Instance;
         playerObject = GameObject.FindWithTag("Player");
         playerBehaviour = playerObject.GetComponent<PlayerBehaviour>();
+    }
+
+    void Awake()
+    {
+        TextAsset wordsFile = Resources.Load<TextAsset>("TypingSkillCheckWords");
+        if (wordsFile == null)
+        {
+            Debug.LogError("Could not load Resources/TypingSkillCheckWords.csv.", this);
+            return;
+        }
+
+        string[] rows = wordsFile.text.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+        if (rows.Length == 0)
+        {
+            Debug.LogError("TypingSkillCheckWords.csv is empty.", this);
+            return;
+        }
+
+        List<string> headers = ParseCsvRow(rows[0]);
+        int easyColumn = headers.FindIndex(header =>
+            header.Trim().TrimStart('\uFEFF').Equals("Easy", System.StringComparison.OrdinalIgnoreCase));
+        if (easyColumn < 0)
+        {
+            Debug.LogError("TypingSkillCheckWords.csv does not contain an Easy column.", this);
+            return;
+        }
+
+        List<string> words = new List<string>();
+        for (int rowIndex = 1; rowIndex < rows.Length; rowIndex++)
+        {
+            List<string> columns = ParseCsvRow(rows[rowIndex]);
+            if (easyColumn < columns.Count)
+            {
+                string candidate = columns[easyColumn].Trim();
+                if (!string.IsNullOrEmpty(candidate))
+                {
+                    words.Add(candidate);
+                }
+            }
+        }
+
+        easyWords = words.ToArray();
+        if (easyWords.Length == 0)
+        {
+            Debug.LogError("TypingSkillCheckWords.csv contains no words in the Easy column.", this);
+        }
+    }
+
+    private static List<string> ParseCsvRow(string row)
+    {
+        List<string> columns = new List<string>();
+        StringBuilder value = new StringBuilder();
+        bool insideQuotes = false;
+
+        for (int i = 0; i < row.Length; i++)
+        {
+            char character = row[i];
+            if (character == '"')
+            {
+                if (insideQuotes && i + 1 < row.Length && row[i + 1] == '"')
+                {
+                    value.Append('"');
+                    i++;
+                }
+                else
+                {
+                    insideQuotes = !insideQuotes;
+                }
+            }
+            else if (character == ',' && !insideQuotes)
+            {
+                columns.Add(value.ToString());
+                value.Clear();
+            }
+            else
+            {
+                value.Append(character);
+            }
+        }
+
+        columns.Add(value.ToString());
+        return columns;
     }
 
     void Update()
