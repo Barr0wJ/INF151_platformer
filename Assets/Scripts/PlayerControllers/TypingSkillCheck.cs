@@ -66,6 +66,10 @@ public class TypingSkillCheck : MonoBehaviour
         originalTimeScale = Time.timeScale;
         gameTimer.SetTimeScale(timeSlowFactor);
 
+        timeLabel.gameObject.SetActive(true);
+        targetWordLabel.gameObject.SetActive(true);
+        inputLabel.gameObject.SetActive(true);
+
         UpdateUI();
 
         if (Keyboard.current != null)
@@ -144,6 +148,10 @@ public class TypingSkillCheck : MonoBehaviour
     private void Complete(bool success = true)
     {
         isActive = false;
+
+        timeLabel.gameObject.SetActive(false);
+        targetWordLabel.gameObject.SetActive(false);
+        inputLabel.gameObject.SetActive(false);
 
         gameTimer.SetTimeScale(originalTimeScale);
 
