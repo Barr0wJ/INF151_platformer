@@ -328,7 +328,7 @@ public class MovementController : MonoBehaviour
 
             Vector2 targetVelocity = new Vector2(-1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
-            SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(1, 3));
+            SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(2.5f, 3));
             animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
@@ -341,7 +341,7 @@ public class MovementController : MonoBehaviour
             Vector2 jumpDirection = direction.normalized;
             Vector2 targetVelocity = new Vector2(1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
-            SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(1, 3));
+            SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(2.5f, 3));
             animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
@@ -405,7 +405,6 @@ public class MovementController : MonoBehaviour
         {
             isObstructed = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, obstacleLayer);
 
-
         }
     }
 
@@ -444,6 +443,7 @@ public class MovementController : MonoBehaviour
             playerBehaviour.RestartGame(5f);
             GameObject.Destroy(this);
             rb.freezeRotation = false;
+            SFXManager.instance.PlaySFX(landSFX, transform, 0.1f, UnityEngine.Random.Range(1, 1.3f));
         }
 
         if (isZiplining) return;
