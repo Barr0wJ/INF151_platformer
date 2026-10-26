@@ -17,6 +17,10 @@ public class TypingSkillCheck : MonoBehaviour
     [SerializeField] private float wrongKeyDecrease = 0.1f;
     [SerializeField] private float timeSlowFactor = 0.2f;
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip beatMiniGameSFX;
+    [SerializeField] private AudioClip failMiniGameSFX;
+
     private GameTimer gameTimer;
     private GameObject playerObject;
     private PlayerBehaviour playerBehaviour;
@@ -148,12 +152,14 @@ public class TypingSkillCheck : MonoBehaviour
         if (success)
         {
             Debug.Log("passed");
+            SFXManager.instance.PlaySFX(beatMiniGameSFX, transform, 1f, UnityEngine.Random.Range(1, 1.5f));
             // add remaining time to the gametimer
             gameTimer.IncreaseTime(timeLeft);
         }
         else
         {
             Debug.Log("failure");
+            SFXManager.instance.PlaySFX(failMiniGameSFX, transform, 1f, UnityEngine.Random.Range(1, 1.5f));
             // failed skill check to an unheard degree (the negative value makes the round timer go negative?)
             // probably restart round or smth
         }

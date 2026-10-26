@@ -57,6 +57,13 @@ public class MovementController : MonoBehaviour
     private float runningVelocity = 4f;
     private float maxRunningSpeed = 10f; // don't change, for animations
 
+    [Header ("SFX")]
+    [SerializeField] private AudioClip jumpSFX;
+    [SerializeField] private AudioClip wallJumpSFX;
+    [SerializeField] private AudioClip slideSFX;
+    [SerializeField] private AudioClip dashSFX;
+    [SerializeField] private AudioClip landSFX;
+
 
     public bool movementEnabled = true;
 
@@ -282,6 +289,7 @@ public class MovementController : MonoBehaviour
         animationController.SetState(AnimationState.Jump);
         float jumpImpulse = (jumpForce - rb.linearVelocity.y) * rb.mass;
         rb.AddForce(Vector2.up * jumpImpulse, ForceMode2D.Impulse);
+        SFXManager.instance.PlaySFX(jumpSFX, transform, 1f, UnityEngine.Random.Range(1, 3));
     }
 
     // ---- WALL JUMP ---- \\
@@ -299,6 +307,7 @@ public class MovementController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(0, -wallSlideSpeed);
             animationController.SetState(AnimationState.WallSlide);
+            SFXManager.instance.PlaySFX(slideSFX, transform, 0.1f, UnityEngine.Random.Range(1, 3));
         }
     }
 
@@ -319,6 +328,7 @@ public class MovementController : MonoBehaviour
 
             Vector2 targetVelocity = new Vector2(-1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
+            SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(1, 3));
             animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
@@ -331,6 +341,7 @@ public class MovementController : MonoBehaviour
             Vector2 jumpDirection = direction.normalized;
             Vector2 targetVelocity = new Vector2(1 * wallJumpForce, wallJumpForce);
             rb.AddForce((targetVelocity - rb.linearVelocity) * rb.mass, ForceMode2D.Impulse);
+            SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(1, 3));
             animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
@@ -360,6 +371,7 @@ public class MovementController : MonoBehaviour
         //}
 
         rb.AddForce(dashDir * dashSpeed * rb.mass, ForceMode2D.Impulse);
+        SFXManager.instance.PlaySFX(dashSFX, transform, 1f, UnityEngine.Random.Range(1, 1.3f));
 
         yield return new WaitForSeconds(dashDur);
 

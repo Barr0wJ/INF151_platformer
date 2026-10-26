@@ -13,6 +13,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] private Collider2D typing_box;
 
+    [SerializeField] private AudioClip startMiniGameSFX;
+    
+
     private CameraController cameraController;
     private MovementController movementController;
     private GameTimer gameTimer;
@@ -32,6 +35,7 @@ public class PlayerBehaviour : MonoBehaviour
             movementController.movementEnabled = false;
             cameraController.ZoomIn();
             skillCheck.StartSkillCheck();
+            SFXManager.instance.PlaySFX(startMiniGameSFX, transform, 1f, UnityEngine.Random.Range(1, 1.5f));
         }
     }
 
