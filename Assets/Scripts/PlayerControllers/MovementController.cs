@@ -69,6 +69,7 @@ public class MovementController : MonoBehaviour
 
     private PlayerBehaviour playerBehaviour;
     private Rigidbody2D rb;
+    private CapsuleCollider2D collider;
     private Vector2 moveInput;
     private bool isGrounded;
     private bool isObstructed;
@@ -427,6 +428,7 @@ public class MovementController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerBehaviour = GetComponent<PlayerBehaviour>();
         gravityScale = rb.gravityScale;
+        collider = GetComponentInChildren<CapsuleCollider2D>();
     }
 
     private void Update()
@@ -444,6 +446,9 @@ public class MovementController : MonoBehaviour
             GameObject.Destroy(this);
             rb.freezeRotation = false;
             SFXManager.instance.PlaySFX(landSFX, transform, 0.1f, UnityEngine.Random.Range(1, 1.3f));
+            animationController.SetState(AnimationState.Dead);
+            collider.size = new Vector2(0.5f, 0.5f); // ye im lazuy
+            // rb.freezeRotation = false;
         }
 
         if (isZiplining) return;

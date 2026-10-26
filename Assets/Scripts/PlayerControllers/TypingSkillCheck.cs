@@ -118,6 +118,11 @@ public class TypingSkillCheck : MonoBehaviour
         else
         {
             timeLabel.text = $"<color=red>-{formattedTime}</color>";
+
+            if (timeLeft <= -10)
+            {
+                Complete(false);
+            }
         }
     }
 

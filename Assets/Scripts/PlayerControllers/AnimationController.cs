@@ -6,7 +6,8 @@ public enum AnimationState
     Run,
     Jump,
     WallSlide,
-    Fall
+    Fall,
+    Dead
 }
 
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
