@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9d1392fede3063b4bb89f6f830f8847c
+guid: dffa64b94efa8f04fb6b79c6af4a0148
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8402738680387106169
-    second: Stopwatch_arrow_0
+      213: 9097489815810816229
+    second: Stopwatch_arrow 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -102,13 +102,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Stopwatch_arrow_0
+      name: Stopwatch_arrow 1_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 27
-        width: 59
-        height: 33
+        x: 7
+        y: 22
+        width: 31
+        height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -117,8 +117,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 97578e86f468c9470800000000000000
-      internalID: 8402738680387106169
+      spriteID: 5e8332379c6c04e70800000000000000
+      internalID: 9097489815810816229
       vertices: []
       indices: 
       edges: []
@@ -137,7 +137,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Stopwatch_arrow_0: 8402738680387106169
+      Stopwatch_arrow 1_0: 9097489815810816229
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
