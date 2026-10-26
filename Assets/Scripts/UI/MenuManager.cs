@@ -8,7 +8,7 @@ public class MenuManager : MonoBehaviour
     public void StartGame()
     {
         // Loads the next scene in the build index
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Level2");
     }
 
     public void QuitGame()
