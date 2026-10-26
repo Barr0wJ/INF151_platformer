@@ -444,7 +444,6 @@ public class MovementController : MonoBehaviour
         {   // Destroys the script within the player object, might want to change to something else later
             playerBehaviour.RestartGame(5f);
             GameObject.Destroy(this);
-            rb.freezeRotation = false;
             SFXManager.instance.PlaySFX(landSFX, transform, 0.1f, UnityEngine.Random.Range(1, 1.3f));
             animationController.SetState(AnimationState.Dead);
             collider.size = new Vector2(0.5f, 0.5f); // ye im lazuy
