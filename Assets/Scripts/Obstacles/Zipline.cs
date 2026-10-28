@@ -106,9 +106,9 @@ public class Zipline : MonoBehaviour
         {
             surfaceNormal = -surfaceNormal;
         }
-        Debug.Log("segment: " + segment);
+        //Debug.Log("segment: " + segment);
         Vector2 playerCenter = other.bounds.center;
-        Debug.Log("Player center: " + playerCenter);
+        //Debug.Log("Player center: " + playerCenter);
 
         float progress = Mathf.Clamp(
             Vector2.Dot(playerCenter - worldStart, travelDirection),
@@ -119,6 +119,7 @@ public class Zipline : MonoBehaviour
 
         float playerRadius = Mathf.Abs(surfaceNormal.x) * playerBounds.extents.x
             + Mathf.Abs(surfaceNormal.y) * playerBounds.extents.y;
+        
         if (playerCenter.y < segment.y)side = 1;
         else side = -1;
 
