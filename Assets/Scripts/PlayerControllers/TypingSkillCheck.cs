@@ -174,7 +174,7 @@ public class TypingSkillCheck : MonoBehaviour
             Debug.Log("failure");
             SFXManager.instance.PlaySFX(failMiniGameSFX, transform, 1f, UnityEngine.Random.Range(1, 1.5f));
             // failed skill check to an unheard degree (the negative value makes the round timer go negative?)
-            // probably restart round or smth
+            gameTimer.IncreaseTime(timeLeft);
         }
     }
 
