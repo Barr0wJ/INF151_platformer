@@ -11,7 +11,7 @@ public class Zipline : MonoBehaviour
     [SerializeField] private Color lineColor = Color.yellow;
 
     protected virtual bool RideOnUpperSide => true;
-
+    private float side;
     private EdgeCollider2D lineCollider;
     private LineRenderer lineRenderer;
     private MovementController rider;
@@ -93,6 +93,7 @@ public class Zipline : MonoBehaviour
         worldStart = transform.TransformPoint(startPoint);
         Vector2 segment = worldEnd - worldStart;
         lineLength = segment.magnitude;
+        
         if (lineLength <= Mathf.Epsilon)
         {
             return;
@@ -106,14 +107,21 @@ public class Zipline : MonoBehaviour
         }
 
         Vector2 playerCenter = other.bounds.center;
+
         float progress = Mathf.Clamp(
             Vector2.Dot(playerCenter - worldStart, travelDirection),
             0f,
             lineLength);
+
         Bounds playerBounds = other.bounds;
+
         float playerRadius = Mathf.Abs(surfaceNormal.x) * playerBounds.extents.x
             + Mathf.Abs(surfaceNormal.y) * playerBounds.extents.y;
-        float side = RideOnUpperSide ? 1f : -1f;
+        Debug.Log("start point: " + worldStart);
+        Debug.Log("Player center: " + playerCenter);
+        if (playerCenter.y > worldStart.y)side = 1;
+        else side = -1;
+
         normalOffset = side * (playerRadius + lineThickness * 0.5f);
         Vector2 bodyToColliderOffset = playerCenter - body.position;
 
@@ -125,6 +133,7 @@ public class Zipline : MonoBehaviour
             minimumSpeed,
             startingSpeed,
             Mathf.Abs(Vector2.Dot(body.linearVelocity, travelDirection)));
+        
         if (movement.IsDashing)
         {
             riderSpeed = Mathf.Max(riderSpeed, movement.DashSpeed);
@@ -155,6 +164,7 @@ public class Zipline : MonoBehaviour
         }
 
         riderBody.gravityScale = 0f;
+
         float gravityAlongLine = Vector2.Dot(
             Physics2D.gravity * rider.NormalGravityScale,
             travelDirection) * 0.5f;

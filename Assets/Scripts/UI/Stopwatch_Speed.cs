@@ -27,7 +27,7 @@ public class Stopwatch_Speed : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(playerRigidbody.linearVelocity.x);
+        //Debug.Log(playerRigidbody.linearVelocity.x);
         rotationAmount = Mathf.Abs(playerRigidbody.linearVelocity.x) / maxMoveSpeed;
         stopwatch_Arrow.rectTransform.localRotation = Quaternion.Euler(0, 0, rotationAmount * -360);
     }
