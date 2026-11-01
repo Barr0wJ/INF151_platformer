@@ -10,7 +10,6 @@ public class Zipline : MonoBehaviour
     [SerializeField, Min(0.01f)] private float minimumSpeed = 3f;
     [SerializeField] private Color lineColor = Color.yellow;
 
-    protected virtual bool RideOnUpperSide => true;
     private float side;
     private EdgeCollider2D lineCollider;
     private LineRenderer lineRenderer;
@@ -106,7 +105,8 @@ public class Zipline : MonoBehaviour
         {
             surfaceNormal = -surfaceNormal;
         }
-        //Debug.Log("segment: " + segment);
+
+        
         Vector2 playerCenter = other.bounds.center;
         //Debug.Log("Player center: " + playerCenter);
 
@@ -116,12 +116,16 @@ public class Zipline : MonoBehaviour
             lineLength);
 
         Bounds playerBounds = other.bounds;
+        Vector2 touchPoint = worldStart + travelDirection * progress;
+
+        //Debug.Log("touchPoint: " + touchPoint);
+
 
         float playerRadius = Mathf.Abs(surfaceNormal.x) * playerBounds.extents.x
             + Mathf.Abs(surfaceNormal.y) * playerBounds.extents.y;
         
-        if (playerCenter.y < segment.y)side = 1;
-        else side = -1;
+        if (playerCenter.y < touchPoint.y)side = -1;
+        else side = 1;
 
         normalOffset = side * (playerRadius + lineThickness * 0.5f);
         Vector2 bodyToColliderOffset = playerCenter - body.position;
