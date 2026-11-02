@@ -120,9 +120,10 @@ public class MovementController : MonoBehaviour
     private void ProcessInput()
     {
         if (isDashing) return;
+        Keyboard keyboard = Keyboard.current;
         if (isZiplining)
         {
-            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (PlayerKeybinds.WasPressed(PlayerKeybinds.Jump))
             {
                 JumpOffZipline();
             }
@@ -135,21 +136,27 @@ public class MovementController : MonoBehaviour
             return;
         }
 
+        if (keyboard == null)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         Vector2 input = Vector2.zero;
-        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveLeft, PlayerKeybinds.MoveLeftAlternate))
         {
             input.x -= 1f;
         }
 
-        if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveRight, PlayerKeybinds.MoveRightAlternate))
         {
             input.x += 1f;
         }
-        if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
+        if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
         {
             input.y += 1f;
         }
-        if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)
+        if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed)
         {
             input.y -= 1f;
         }
@@ -219,7 +226,7 @@ public class MovementController : MonoBehaviour
         }
 
         // Jump (max height)
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (PlayerKeybinds.WasPressed(PlayerKeybinds.Jump))
         {
             if (IsTouchingWall() && !isGrounded)
             {
@@ -233,16 +240,16 @@ public class MovementController : MonoBehaviour
         }
 
         //slide on ctrl press
-        if (Keyboard.current.ctrlKey.wasPressedThisFrame && isGrounded){
+        if (PlayerKeybinds.WasPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
             isSliding = true;
         }
-        if (Keyboard.current.ctrlKey.wasReleasedThisFrame && isGrounded){
+        if (PlayerKeybinds.WasReleased(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
             isSliding = false;
         }
 
 
         // Jump (soft jump)
-        if (Keyboard.current.spaceKey.wasReleasedThisFrame && rb.linearVelocity.y > 0)
+        if (PlayerKeybinds.WasReleased(PlayerKeybinds.Jump) && rb.linearVelocity.y > 0)
         {
             animationController.SetState(AnimationState.Jump);
             float jumpCutImpulse = rb.linearVelocity.y * (jumpCutMultiplier - 1f) * rb.mass;
@@ -250,7 +257,7 @@ public class MovementController : MonoBehaviour
         }
 
         // Input.GetKeyDown
-        if (Keyboard.current.leftShiftKey.wasPressedThisFrame && canDash)
+        if (PlayerKeybinds.WasPressed(PlayerKeybinds.Dash) && canDash)
         {
             StartCoroutine(Dash());
         }

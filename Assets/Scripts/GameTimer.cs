@@ -15,6 +15,7 @@ public class GameTimer : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private TextMeshProUGUI timerLabel;
     [SerializeField] private float time = 100; // seconds
+    public bool enablePausing = true;
     private float maxTime;
 
     private bool gameRunning = true;
@@ -70,7 +71,7 @@ public class GameTimer : MonoBehaviour
 
     public void HandlePause()
     {
-
+        if (!enablePausing) return;
         if (!gameRunning)
         {
             // disable pause ui
