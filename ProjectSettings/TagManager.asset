@@ -15,7 +15,7 @@ TagManager:
   - Ground
   - Obstacle
   - Trigger
-  - 
+  - NPC
   - 
   - 
   - 
@@ -39,8 +39,14 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 482394267
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: CameraSortingLayer
+    uniqueID: 2333312521
     locked: 0
   m_RenderingLayers:
   - Default
