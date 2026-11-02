@@ -14,17 +14,29 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] private Collider2D typing_box;
 
     [SerializeField] private AudioClip startMiniGameSFX;
+
+    [SerializeField] private DialogueHandler dialogue;
     
 
     private CameraController cameraController;
     private MovementController movementController;
     private GameTimer gameTimer;
 
-    private void OnTriggerEnter2D(Collider2D typing_box)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (typing_box.gameObject.layer == 8) {
+        if (other.gameObject.layer == 8) {
         int randomInt = UnityEngine.Random.Range(0, word_list.Length);
         StartSkillCheck();
+        } 
+        else if (other.gameObject.layer == 10)
+        {
+            DialogueBlock d;
+
+            if (other.gameObject.TryGetComponent<DialogueBlock>(out d))
+            {
+                dialogue.WriteText(d.GetLines(), d.GetEndlag());
+                // Destroy(d);
+            }
         }
     }
 

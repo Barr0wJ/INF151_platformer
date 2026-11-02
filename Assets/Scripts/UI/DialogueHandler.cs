@@ -1,16 +1,45 @@
+using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class DialogueHandler : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private TMP_Text dialogueText;
+    [SerializeField] private float typingSpeed = 0.04f;
+
+    private Coroutine typingCoroutine;
+    
+    public void WriteText(string message, float endlag = 3)
     {
-        
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+
+        Debug.Log(message);
+
+        gameObject.SetActive(true);
+        typingCoroutine = StartCoroutine(Type(message, endlag));
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator Type(string message, float endlag)
     {
-        
+        dialogueText.text = message;
+        dialogueText.maxVisibleCharacters = 0;
+
+        dialogueText.ForceMeshUpdate();
+
+        int totalVisibleCharacters = dialogueText.textInfo.characterCount;
+
+        for (int i = 0; i <= totalVisibleCharacters; i++)
+        {
+            dialogueText.maxVisibleCharacters = i;
+            yield return new WaitForSecondsRealtime(typingSpeed);
+        }
+
+        yield return new WaitForSecondsRealtime(endlag);
+
+        gameObject.SetActive(false);
+        typingCoroutine = null;
     }
 }
