@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1148628923154676128}
   m_Layer: 8
   m_Name: Typing Block
-  m_TagString: Untagged
+  m_TagString: TypingBlock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
