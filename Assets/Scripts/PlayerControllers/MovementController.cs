@@ -243,10 +243,12 @@ public class MovementController : MonoBehaviour
         if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
             isSliding = true;
             Debug.Log("Sliding");
+            canDash = false;
         }
-        if (PlayerKeybinds.WasReleased(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
+        else{
             isSliding = false;
             Debug.Log("Not Sliding");
+            canDash = true;
         }
 
 
