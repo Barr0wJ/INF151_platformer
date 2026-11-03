@@ -76,10 +76,22 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    public void LoadLevel1()
     {
         // Loads the next scene in the build index
-        SceneManager.LoadScene("Level2");
+        SceneManager.LoadScene("Level 1");
+    }
+
+    public void LoadLevel2()
+    {
+        // Loads the next scene in the build index
+        SceneManager.LoadScene("Level 2");
+    }
+
+    public void LoadLevel3()
+    {
+        // Loads the next scene in the build index
+        SceneManager.LoadScene("Level 3");
     }
 
     public void QuitGame()

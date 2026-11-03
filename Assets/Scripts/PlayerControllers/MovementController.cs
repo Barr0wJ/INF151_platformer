@@ -240,11 +240,13 @@ public class MovementController : MonoBehaviour
         }
 
         //slide on ctrl press
-        if (PlayerKeybinds.WasPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
             isSliding = true;
+            Debug.Log("Sliding");
         }
         if (PlayerKeybinds.WasReleased(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
             isSliding = false;
+            Debug.Log("Not Sliding");
         }
 
 
