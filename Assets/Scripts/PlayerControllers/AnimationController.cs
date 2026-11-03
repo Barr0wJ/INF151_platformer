@@ -25,7 +25,7 @@ public class AnimationController : MonoBehaviour
 
         animator.Play(newState.ToString());
         currentState = newState;
-        Debug.Log("Setting State: " + newState.ToString());
+        //Debug.Log("Setting State: " + newState.ToString());
     }
 
     public void SetSpeed(float speedMultiplier)

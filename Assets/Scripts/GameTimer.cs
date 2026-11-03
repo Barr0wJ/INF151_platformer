@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -107,15 +108,16 @@ public class GameTimer : MonoBehaviour
     public void EndGame(bool passed = false)
     {
         gameEnd = true;
-        string[] previousHighScores = RetrieveHighScores();
+        string sceneName = SceneManager.GetActiveScene().name;
+        string[] previousHighScores = RetrieveHighScores(sceneName);
         bool isNewHighScore = passed &&
             (previousHighScores.Length == 0 ||
              (TryParseClockTime(previousHighScores[0], out long previousBest) &&
               TryParseClockTime(GetClockTime(), out long finalTime) &&
               finalTime > previousBest));
 
-        UpdateHighScores(passed);
-        string[] highScores = RetrieveHighScores();
+        UpdateHighScores(passed, sceneName);
+        string[] highScores = RetrieveHighScores(sceneName);
         string highScoresText = FormatHighScores(highScores);
 
         if (passed)
@@ -133,43 +135,74 @@ public class GameTimer : MonoBehaviour
 
     }
 
-    public string[] RetrieveHighScores()
+    public static string[] RetrieveHighScores(string sceneName = null, int limit = 3)
     {
-        string path = Path.Combine(Application.persistentDataPath, HighScoresFileName);
-        if (!File.Exists(path))
+        sceneName = sceneName ?? SceneManager.GetActiveScene().name;
+        if (string.IsNullOrWhiteSpace(sceneName))
         {
             return new string[0];
         }
 
-        var highScores = new List<KeyValuePair<string, long>>();
-
-        foreach (string line in File.ReadAllLines(path))
+        string path = Path.Combine(Application.persistentDataPath, HighScoresFileName);
+        if (!TryReadHighScoreColumns(path, out List<HighScoreColumn> columns))
         {
-            string clockTime = line.Trim();
-            if (clockTime.Length == 0 || clockTime == "Time")
-            {
-                continue;
-            }
-
-            if (TryParseClockTime(clockTime, out long centiseconds))
-            {
-                highScores.Add(new KeyValuePair<string, long>(clockTime, centiseconds));
-            }
-            else
-            {
-                Debug.LogWarning($"Skipping invalid high score '{clockTime}' in {path}");
-            }
+            return new string[0];
         }
 
-        highScores.Sort((left, right) => right.Value.CompareTo(left.Value));
-        int scoreCount = Mathf.Min(3, highScores.Count);
+        HighScoreColumn column = columns.Find(candidate => candidate.SceneName == sceneName);
+        if (column == null)
+        {
+            return new string[0];
+        }
+
+        int scoreCount = Mathf.Min(Mathf.Clamp(limit, 0, HighScoreLimit), column.Scores.Count);
         var topScores = new string[scoreCount];
         for (int i = 0; i < scoreCount; i++)
         {
-            topScores[i] = highScores[i].Key;
+            topScores[i] = column.Scores[i].ClockTime;
         }
 
         return topScores;
+    }
+
+    public static bool ClearHighScores(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            Debug.LogError("Cannot clear high scores because the scene name is empty.");
+            return false;
+        }
+
+        string path = Path.Combine(Application.persistentDataPath, HighScoresFileName);
+        Directory.CreateDirectory(Application.persistentDataPath);
+        if (!TryReadHighScoreColumns(path, out List<HighScoreColumn> columns))
+        {
+            return false;
+        }
+
+        HighScoreColumn column = columns.Find(candidate => candidate.SceneName == sceneName);
+        if (column == null)
+        {
+            columns.Add(new HighScoreColumn(sceneName));
+        }
+        else
+        {
+            column.Scores.Clear();
+        }
+
+        WriteHighScoreColumns(path, columns);
+        return true;
+    }
+
+    public static void ClearAllHighScores()
+    {
+        string path = Path.Combine(Application.persistentDataPath, HighScoresFileName);
+        Directory.CreateDirectory(Application.persistentDataPath);
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+        File.WriteAllText(path, string.Empty);
     }
 
     private static string FormatHighScores(string[] highScores)
@@ -188,67 +221,304 @@ public class GameTimer : MonoBehaviour
         return string.Join("\n", lines);
     }
 
-    private void UpdateHighScores(bool passed, int level = -1)
+    private void UpdateHighScores(bool passed, string sceneName = null)
     {
-        // eventually add different high scores for each level and one overall, 
-        // but for now just one high score list
+        sceneName = sceneName ?? SceneManager.GetActiveScene().name;
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            Debug.LogError("Cannot save high scores because the active scene has no name.");
+            return;
+        }
 
         string path = Path.Combine(Application.persistentDataPath, HighScoresFileName);
         Directory.CreateDirectory(Application.persistentDataPath);
 
-        if (!File.Exists(path))
-        {
-            File.WriteAllText(path, "Time" + System.Environment.NewLine);
-        }
-
-        if (!passed)
+        if (!TryReadHighScoreColumns(path, out List<HighScoreColumn> columns))
         {
             return;
         }
 
-        var highScores = new List<KeyValuePair<string, long>>();
-        string[] lines = File.ReadAllLines(path);
-
-        foreach (string line in lines)
+        HighScoreColumn column = columns.Find(candidate => candidate.SceneName == sceneName);
+        if (column == null)
         {
-            string clockTime = line.Trim();
-            if (clockTime.Length == 0 || clockTime == "Time")
+            column = new HighScoreColumn(sceneName);
+            columns.Add(column);
+        }
+
+        if (passed)
+        {
+            string currentTime = GetClockTime();
+            if (!TryParseClockTime(currentTime, out long currentCentiseconds))
             {
+                Debug.LogError($"Could not parse current high score '{currentTime}'");
+                return;
+            }
+
+            column.Scores.Add(new HighScore(currentTime, currentCentiseconds));
+        }
+
+        foreach (HighScoreColumn scoreColumn in columns)
+        {
+            scoreColumn.Scores.Sort((left, right) =>
+                right.Centiseconds.CompareTo(left.Centiseconds));
+            if (scoreColumn.Scores.Count > HighScoreLimit)
+            {
+                scoreColumn.Scores.RemoveRange(
+                    HighScoreLimit, scoreColumn.Scores.Count - HighScoreLimit);
+            }
+        }
+
+        WriteHighScoreColumns(path, columns);
+    }
+
+    private static void WriteHighScoreColumns(
+        string path, List<HighScoreColumn> columns)
+    {
+        var output = new StringBuilder();
+        for (int columnIndex = 0; columnIndex < columns.Count; columnIndex++)
+        {
+            if (columnIndex > 0)
+            {
+                output.Append(',');
+            }
+
+            AppendCsvField(output, columns[columnIndex].SceneName);
+        }
+        output.AppendLine();
+
+        int rowCount = 0;
+        foreach (HighScoreColumn scoreColumn in columns)
+        {
+            rowCount = Mathf.Max(rowCount, scoreColumn.Scores.Count);
+        }
+
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+        {
+            for (int columnIndex = 0; columnIndex < columns.Count; columnIndex++)
+            {
+                if (columnIndex > 0)
+                {
+                    output.Append(',');
+                }
+
+                List<HighScore> scores = columns[columnIndex].Scores;
+                if (rowIndex < scores.Count)
+                {
+                    AppendCsvField(output, scores[rowIndex].ClockTime);
+                }
+            }
+            output.AppendLine();
+        }
+
+        File.WriteAllText(path, output.ToString());
+    }
+
+    private static bool TryReadHighScoreColumns(
+        string path, out List<HighScoreColumn> columns)
+    {
+        columns = new List<HighScoreColumn>();
+        if (!File.Exists(path))
+        {
+            return true;
+        }
+
+        if (!TryParseCsv(File.ReadAllText(path), out List<List<string>> rows))
+        {
+            Debug.LogError($"Could not read high scores because {path} is not valid CSV.");
+            return false;
+        }
+
+        if (rows.Count == 0)
+        {
+            return true;
+        }
+
+        foreach (string sceneName in rows[0])
+        {
+            HighScoreColumn column = columns.Find(
+                candidate => candidate.SceneName == sceneName);
+            if (column == null)
+            {
+                columns.Add(new HighScoreColumn(sceneName));
+            }
+        }
+
+        for (int rowIndex = 1; rowIndex < rows.Count; rowIndex++)
+        {
+            List<string> row = rows[rowIndex];
+            for (int columnIndex = 0; columnIndex < row.Count; columnIndex++)
+            {
+                if (columnIndex >= rows[0].Count)
+                {
+                    if (!string.IsNullOrWhiteSpace(row[columnIndex]))
+                    {
+                        Debug.LogWarning(
+                            $"Skipping high score in an unnamed column in {path}");
+                    }
+                    continue;
+                }
+
+                string clockTime = row[columnIndex].Trim();
+                if (clockTime.Length == 0)
+                {
+                    continue;
+                }
+
+                if (!TryParseClockTime(clockTime, out long centiseconds))
+                {
+                    Debug.LogWarning($"Skipping invalid high score '{clockTime}' in {path}");
+                    continue;
+                }
+
+                string sceneName = rows[0][columnIndex];
+                HighScoreColumn column = columns.Find(
+                    candidate => candidate.SceneName == sceneName);
+                column.Scores.Add(new HighScore(clockTime, centiseconds));
+            }
+        }
+
+        foreach (HighScoreColumn column in columns)
+        {
+            column.Scores.Sort((left, right) =>
+                right.Centiseconds.CompareTo(left.Centiseconds));
+            if (column.Scores.Count > HighScoreLimit)
+            {
+                column.Scores.RemoveRange(
+                    HighScoreLimit, column.Scores.Count - HighScoreLimit);
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TryParseCsv(string text, out List<List<string>> rows)
+    {
+        rows = new List<List<string>>();
+        if (text.Length == 0)
+        {
+            return true;
+        }
+
+        var row = new List<string>();
+        var field = new StringBuilder();
+        bool inQuotes = false;
+        bool afterQuote = false;
+        bool recordStarted = false;
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            char character = text[i];
+            if (inQuotes)
+            {
+                if (character == '"')
+                {
+                    if (i + 1 < text.Length && text[i + 1] == '"')
+                    {
+                        field.Append('"');
+                        i++;
+                    }
+                    else
+                    {
+                        inQuotes = false;
+                        afterQuote = true;
+                    }
+                }
+                else
+                {
+                    field.Append(character);
+                }
                 continue;
             }
 
-            if (TryParseClockTime(clockTime, out long centiseconds))
+            if (afterQuote && character != ',' && character != '\r' && character != '\n')
             {
-                highScores.Add(new KeyValuePair<string, long>(clockTime, centiseconds));
+                return false;
+            }
+
+            if (character == '"')
+            {
+                if (field.Length > 0 || afterQuote)
+                {
+                    return false;
+                }
+                inQuotes = true;
+                recordStarted = true;
+            }
+            else if (character == ',')
+            {
+                row.Add(field.ToString());
+                field.Clear();
+                afterQuote = false;
+                recordStarted = true;
+            }
+            else if (character == '\r' || character == '\n')
+            {
+                row.Add(field.ToString());
+                rows.Add(row);
+                row = new List<string>();
+                field.Clear();
+                afterQuote = false;
+                recordStarted = false;
+                if (character == '\r' && i + 1 < text.Length && text[i + 1] == '\n')
+                {
+                    i++;
+                }
             }
             else
             {
-                Debug.LogWarning($"Skipping invalid high score '{clockTime}' in {path}");
+                field.Append(character);
+                recordStarted = true;
             }
         }
 
-        string currentTime = GetClockTime();
-        if (!TryParseClockTime(currentTime, out long currentCentiseconds))
+        if (inQuotes)
         {
-            Debug.LogError($"Could not parse current high score '{currentTime}'");
+            return false;
+        }
+        if (recordStarted || field.Length > 0 || row.Count > 0)
+        {
+            row.Add(field.ToString());
+            rows.Add(row);
+        }
+
+        return true;
+    }
+
+    private static void AppendCsvField(StringBuilder output, string value)
+    {
+        bool needsQuotes = value.IndexOfAny(new[] { ',', '"', '\r', '\n' }) >= 0;
+        if (!needsQuotes)
+        {
+            output.Append(value);
             return;
         }
 
-        highScores.Add(new KeyValuePair<string, long>(currentTime, currentCentiseconds));
-        highScores.Sort((left, right) => right.Value.CompareTo(left.Value));
+        output.Append('"');
+        output.Append(value.Replace("\"", "\"\""));
+        output.Append('"');
+    }
 
-        if (highScores.Count > HighScoreLimit)
+    private sealed class HighScoreColumn
+    {
+        public readonly string SceneName;
+        public readonly List<HighScore> Scores = new List<HighScore>();
+
+        public HighScoreColumn(string sceneName)
         {
-            highScores.RemoveRange(HighScoreLimit, highScores.Count - HighScoreLimit);
+            SceneName = sceneName;
         }
+    }
 
-        var outputLines = new List<string> { "Time" };
-        foreach (KeyValuePair<string, long> highScore in highScores)
+    private sealed class HighScore
+    {
+        public readonly string ClockTime;
+        public readonly long Centiseconds;
+
+        public HighScore(string clockTime, long centiseconds)
         {
-            outputLines.Add(highScore.Key);
+            ClockTime = clockTime;
+            Centiseconds = centiseconds;
         }
-
-        File.WriteAllLines(path, outputLines);
     }
 
     private static bool TryParseClockTime(string clockTime, out long centiseconds)
