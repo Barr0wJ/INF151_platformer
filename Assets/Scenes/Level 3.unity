@@ -270,6 +270,7 @@ MonoBehaviour:
   word_list: []
   typing_box: {fileID: 1148628923154676128, guid: 0e11a6603ae065b41a9cc06cae649474, type: 3}
   startMiniGameSFX: {fileID: 8300000, guid: 5903e7ea2a4e7a24e96b34e0dd3d7891, type: 3}
+  dialogue: {fileID: 0}
 --- !u!1 &88238842
 GameObject:
   m_ObjectHideFlags: 0
@@ -2914,7 +2915,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 884838448ab07194f888f72e52a72fd5, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -25923,7 +25924,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 182.65
+  m_fontSize: 190.25
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1
