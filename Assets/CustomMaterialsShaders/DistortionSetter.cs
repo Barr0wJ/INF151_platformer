@@ -49,7 +49,7 @@ public class DistortionSetter : MonoBehaviour
     {   
         Transform typingBlock = GetClosestTransform();
 
-        if (typingBlock == null) return;
+        if (typingBlock == null) {return;}
 
         Vector3 localPos = sr.transform.InverseTransformPoint(typingBlock.position);
 
@@ -87,6 +87,12 @@ public class DistortionSetter : MonoBehaviour
 
 
         sr = GetComponent<SpriteRenderer>();
+
+        if (blockObjects.Length == 0)
+        {
+            sr.material.SetVector("_Position", new Vector2(2, 2));
+            Destroy(this);
+        }
     }
 
     // Update is called once per frame
