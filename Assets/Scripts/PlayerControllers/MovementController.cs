@@ -239,7 +239,7 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        //slide on ctrl press
+        //slide on ctrl/binding press
         if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
             isSliding = true;
             Debug.Log("Sliding");
@@ -248,7 +248,12 @@ public class MovementController : MonoBehaviour
         else{
             isSliding = false;
             Debug.Log("Not Sliding");
-            canDash = true;
+            // Need the player to be able to dash again, but setting canDash to true here
+            // allows the player to dash as many as times as needed when not sliding (basically anywhere)
+            if (isGrounded) 
+            {
+                canDash = true;
+            }
         }
 
 
