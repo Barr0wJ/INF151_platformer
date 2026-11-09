@@ -3143,6 +3143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 316650325}
   - component: {fileID: 316650326}
+  - component: {fileID: 316650327}
   m_Layer: 0
   m_Name: jungleback_0
   m_TagString: Untagged
@@ -3191,7 +3192,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 3716e294147fd5447ae2b93ce90d80eb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3225,6 +3226,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &316650327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316650324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8674bfaa27b625f4ba66715065868d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DistortionSetter
 --- !u!1001 &341759751
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -74158,7 +74171,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 177.75
+  m_fontSize: 190.25
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1
