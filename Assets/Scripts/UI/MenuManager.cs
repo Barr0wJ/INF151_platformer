@@ -22,7 +22,7 @@ public class MenuManager : MonoBehaviour
 
     [Tooltip("Add each level's Unity scene name here to include it in the high scores page.")]
     [SerializeField] private string[] highScoreSceneNames =
-        { "Level 1", "Level2", "Level 3" };
+        {"Level0", "Level 1", "Level 2", "Level 3" };
 
     public Slider volumeSlider;
 
@@ -183,7 +183,7 @@ public class MenuManager : MonoBehaviour
         }
 
         GameObject viewportObject = new GameObject(
-            "HighScoresViewport", typeof(RectTransform), typeof(Image), typeof(Mask),
+            "HighScoresViewport", typeof(RectTransform), typeof(RectMask2D),
             typeof(ScrollRect));
         viewportObject.layer = highScoresPanel.layer;
         RectTransform viewport = viewportObject.GetComponent<RectTransform>();
@@ -192,10 +192,6 @@ public class MenuManager : MonoBehaviour
         viewport.anchorMax = new Vector2(0.93f, 0.70f);
         viewport.offsetMin = Vector2.zero;
         viewport.offsetMax = Vector2.zero;
-
-        Image viewportImage = viewportObject.GetComponent<Image>();
-        viewportImage.color = new Color(1f, 1f, 1f, 0f);
-        viewportObject.GetComponent<Mask>().showMaskGraphic = false;
 
         GameObject contentObject = new GameObject("ScoreColumns", typeof(RectTransform));
         contentObject.layer = highScoresPanel.layer;
@@ -224,6 +220,7 @@ public class MenuManager : MonoBehaviour
 
     private void RefreshHighScores()
     {
+        Debug.Log("Refreshing high scores display.");
         if (scoreColumnsContent == null)
         {
             return;
@@ -255,6 +252,7 @@ public class MenuManager : MonoBehaviour
 
         for (int i = 0; i < sceneNames.Count; i++)
         {
+            Debug.Log($"Creating high score column for scene: {sceneNames[i]}");
             CreateHighScoreColumn(sceneNames[i], startX + i *
                 (ScoreColumnWidth + ScoreColumnSpacing));
         }
@@ -289,8 +287,10 @@ public class MenuManager : MonoBehaviour
         levelTitle.fontSizeMin = 14f;
         levelTitle.fontSizeMax = 25f;
 
+        Debug.Log($"Retrieving high scores for scene: {sceneName}");
         string[] scores = GameTimer.RetrieveHighScores(sceneName, HighScoreDisplayLimit);
         string scoreText = scores.Length == 0 ? "No scores yet" : FormatScoreLines(scores);
+        Debug.Log($"High scores for scene {sceneName}:\n{scoreText}");
         CreateText(
             "ScoreList", scoreText, column, new Vector2(0f, 1f),
             new Vector2(1f, 1f), new Vector2(12f, -48f),
@@ -318,6 +318,7 @@ public class MenuManager : MonoBehaviour
         Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax,
         float fontSize, TextAlignmentOptions alignment)
     {
+        Debug.Log($"Creating text object '{objectName}' with value: {value}");
         GameObject textObject = new GameObject(
             objectName, typeof(RectTransform), typeof(CanvasRenderer),
             typeof(TextMeshProUGUI));

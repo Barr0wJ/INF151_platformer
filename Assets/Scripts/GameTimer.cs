@@ -580,6 +580,7 @@ public class GameTimer : MonoBehaviour
     void Start()
     {
         maxTime = time;
+        Debug.Log($"High scores file: {Path.Combine(Application.persistentDataPath, HighScoresFileName)}");
     }
 
     // Update is called once per frame
