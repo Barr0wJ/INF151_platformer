@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour
@@ -247,7 +248,7 @@ public class MovementController : MonoBehaviour
         }
         else{
             isSliding = false;
-            Debug.Log("Not Sliding");
+            //Debug.Log("Not Sliding");
             // Need the player to be able to dash again, but setting canDash to true here
             // allows the player to dash as many as times as needed when not sliding (basically anywhere)
             if (isGrounded) 
@@ -318,11 +319,31 @@ public class MovementController : MonoBehaviour
 
     private void WallSlide()
     {
-        // Removed "IsTouchingWall() && " since its already checked in update
+        float input = 0f;
+
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveLeft, PlayerKeybinds.MoveLeftAlternate) 
+            && Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer)) {
+            input = -1f;
+        }
+        else if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveRight, PlayerKeybinds.MoveRightAlternate) 
+            && Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer)) {
+            input = 1f;
+        }
+
+        else { input = 0f; }
+
+            // Removed "IsTouchingWall() && " since its already checked in update
         isWallSliding = rb.linearVelocity.y <= 0f;
-        if (isWallSliding)
+        //
+        if (isWallSliding && input != 0)
         {
-            rb.linearVelocity = new Vector2(rb.position.x, -wallSlideSpeed);
+            rb.linearVelocity = new Vector2(input, -wallSlideSpeed);
+            animationController.SetState(AnimationState.WallSlide);
+            //SFXManager.instance.PlaySFX(slideSFX, transform, 0.1f, UnityEngine.Random.Range(1, 3));
+        }
+        // Player still has animation when on a wall going down, but the act of sliding is gone sorta.
+        else if (isWallSliding)
+        {
             animationController.SetState(AnimationState.WallSlide);
             SFXManager.instance.PlaySFX(slideSFX, transform, 0.1f, UnityEngine.Random.Range(1, 3));
         }
