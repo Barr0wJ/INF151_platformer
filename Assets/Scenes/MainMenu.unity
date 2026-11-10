@@ -3906,7 +3906,7 @@ MonoBehaviour:
   highScoresPanel: {fileID: 1495082717}
   highScoreSceneNames:
   - Level 1
-  - Level2
+  - Level 2
   - Level 3
   volumeSlider: {fileID: 300977583}
   leftButtonText: {fileID: 968301168}
@@ -6525,8 +6525,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 285.00568}
-  m_SizeDelta: {x: 945.2962, y: 245.442}
+  m_AnchoredPosition: {x: -12.597, y: 20.4696}
+  m_SizeDelta: {x: 920.1022, y: 774.514}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1886503928
 MonoBehaviour:
@@ -6548,7 +6548,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: High Scores
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6575,8 +6575,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70
-  m_fontSizeBase: 70
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
