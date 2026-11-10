@@ -94,6 +94,12 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene("Level 3");
     }
 
+    public void LoadLevel0()
+    {
+        // Loads the next scene in the build index
+        SceneManager.LoadScene("Level0");
+    }
+
     public void QuitGame()
     {
         Application.Quit();

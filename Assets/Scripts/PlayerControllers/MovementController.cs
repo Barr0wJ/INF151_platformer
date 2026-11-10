@@ -322,7 +322,7 @@ public class MovementController : MonoBehaviour
         isWallSliding = rb.linearVelocity.y <= 0f;
         if (isWallSliding)
         {
-            rb.linearVelocity = new Vector2(0, -wallSlideSpeed);
+            rb.linearVelocity = new Vector2(rb.position.x, -wallSlideSpeed);
             animationController.SetState(AnimationState.WallSlide);
             SFXManager.instance.PlaySFX(slideSFX, transform, 0.1f, UnityEngine.Random.Range(1, 3));
         }
