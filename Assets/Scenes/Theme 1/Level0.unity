@@ -2966,6 +2966,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Obstacle Block
       objectReference: {fileID: 0}
+    - target: {fileID: 5935310359610934273, guid: c61510a618159e9429c277edea6b3745, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6783572457214721724, guid: c61510a618159e9429c277edea6b3745, type: 3}
       propertyPath: m_Color.a
       value: 0
