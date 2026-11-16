@@ -49,16 +49,6 @@ public class CameraController : MonoBehaviour
         );
     }
 
-    //Freecam
-    public void ToggleFreeCam()
-    {
-        if (player)
-        {
-            //player.gameObject.SetActive(!player.gameObject.activeSelf);
-            Debug.Log("Freecam toggled.");
-        }
-
-    }
     private void ProcessZoom()
     {
         if (!cam) return;

@@ -120,6 +120,11 @@ public class MovementController : MonoBehaviour
 
     private void ProcessInput()
     {
+        if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam))
+        {
+            FreeCamera.ToggleFreeCam();
+        }
+
         if (isDashing) return;
         Keyboard keyboard = Keyboard.current;
         if (isZiplining)
@@ -257,12 +262,6 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        //FreeCam
-        if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam))
-        {
-            HandleFreeCam();
-        }
-
         // Jump (soft jump)
         if (PlayerKeybinds.WasReleased(PlayerKeybinds.Jump) && rb.linearVelocity.y > 0)
         {
@@ -291,11 +290,6 @@ public class MovementController : MonoBehaviour
             Mathf.Max(exitVelocity.y, jumpForce));
     }
 
-    // ---- FREECAM ---- \\
-    private void HandleFreeCam()
-    {
-        CameraController.instance.ToggleFreeCam();
-    }
     // ---- JUMP ---- \\
 
     private void HandleJump()

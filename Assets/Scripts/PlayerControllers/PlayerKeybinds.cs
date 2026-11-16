@@ -8,6 +8,8 @@ public enum PlayerAction
     Jump,
     MoveRight,
     MoveLeft,
+    MoveUp,
+    MoveDown,
     Dash,
     Slide,
     FreeCam
@@ -22,6 +24,10 @@ public static class PlayerKeybinds
     private static Key moveRightAlternate = Key.D;
     private static Key moveLeft = Key.LeftArrow;
     private static Key moveLeftAlternate = Key.A;
+    private static Key moveUp = Key.W;
+    private static Key moveUpAlternate = Key.UpArrow;
+    private static Key moveDown = Key.S;
+    private static Key moveDownAlternate = Key.DownArrow;
     private static Key dash = Key.LeftShift;
     private static Key slide = Key.LeftCtrl;
     private static Key slideAlternate = Key.RightCtrl;
@@ -36,6 +42,10 @@ public static class PlayerKeybinds
         public string moveRightAlternate = "D";
         public string moveLeft = "LeftArrow";
         public string moveLeftAlternate = "A";
+        public string moveUp = "W";
+        public string moveUpAlternate = "UpArrow";
+        public string moveDown = "S";
+        public string moveDownAlternate = "DownArrow";
         public string dash = "LeftShift";
         public string slide = "LeftCtrl";
         public string slideAlternate = "RightCtrl";
@@ -66,7 +76,22 @@ public static class PlayerKeybinds
     {
         get { EnsureLoaded(); return moveLeftAlternate; }
     }
-
+    public static Key MoveUp
+    {
+        get { EnsureLoaded(); return moveUp; }
+    }
+    public static Key MoveUpAlternate
+    {
+        get { EnsureLoaded(); return moveUpAlternate; }
+    }
+    public static Key MoveDown
+    {
+        get { EnsureLoaded(); return moveDown; }
+    }
+    public static Key MoveDownAlternate
+    {
+        get { EnsureLoaded(); return moveDownAlternate; }
+    }
     public static Key Dash
     {
         get { EnsureLoaded(); return dash; }
@@ -113,6 +138,14 @@ public static class PlayerKeybinds
             case PlayerAction.MoveLeft:
                 moveLeft = key;
                 moveLeftAlternate = Key.None;
+                break;
+            case PlayerAction.MoveUp:
+                moveUp = key;
+                moveUpAlternate = Key.None;
+                break;
+            case PlayerAction.MoveDown:
+                moveDown = key;
+                moveDownAlternate = Key.None;
                 break;
             case PlayerAction.Dash:
                 dash = key;
@@ -261,6 +294,10 @@ public static class PlayerKeybinds
         moveRightAlternate = ReadKey(data.moveRightAlternate, Key.D, "moveRightAlternate", true);
         moveLeft = ReadKey(data.moveLeft, Key.LeftArrow, "moveLeft");
         moveLeftAlternate = ReadKey(data.moveLeftAlternate, Key.A, "moveLeftAlternate", true);
+        moveUp = ReadKey(data.moveUp, Key.W, "moveUp");
+        moveUpAlternate = ReadKey(data.moveUpAlternate, Key.UpArrow, "moveUpAlternate", true);
+        moveDown = ReadKey(data.moveDown, Key.S, "moveDown");
+        moveDownAlternate = ReadKey(data.moveDownAlternate, Key.DownArrow, "moveDownAlternate", true);
         dash = ReadKey(data.dash, Key.LeftShift, "dash");
         slide = ReadKey(data.slide, Key.LeftCtrl, "slide");
         slideAlternate = ReadKey(data.slideAlternate, Key.RightCtrl, "slideAlternate", true);
@@ -294,6 +331,10 @@ public static class PlayerKeybinds
             moveRightAlternate = moveRightAlternate == Key.None ? string.Empty : moveRightAlternate.ToString(),
             moveLeft = moveLeft.ToString(),
             moveLeftAlternate = moveLeftAlternate == Key.None ? string.Empty : moveLeftAlternate.ToString(),
+            moveUp = moveUp.ToString(),
+            moveUpAlternate = moveUpAlternate == Key.None ? string.Empty : moveUpAlternate.ToString(),
+            moveDown = moveDown.ToString(),
+            moveDownAlternate = moveDownAlternate == Key.None ? string.Empty : moveDownAlternate.ToString(),
             dash = dash.ToString(),
             slide = slide.ToString(),
             slideAlternate = slideAlternate == Key.None ? string.Empty : slideAlternate.ToString(),
