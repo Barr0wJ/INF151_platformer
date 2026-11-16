@@ -9,7 +9,8 @@ public enum PlayerAction
     MoveRight,
     MoveLeft,
     Dash,
-    Slide
+    Slide,
+    FreeCam
 }
 
 public static class PlayerKeybinds
@@ -24,6 +25,7 @@ public static class PlayerKeybinds
     private static Key dash = Key.LeftShift;
     private static Key slide = Key.LeftCtrl;
     private static Key slideAlternate = Key.RightCtrl;
+    private static Key freeCam = Key.P;
     private static bool loaded;
 
     [Serializable]
@@ -37,6 +39,7 @@ public static class PlayerKeybinds
         public string dash = "LeftShift";
         public string slide = "LeftCtrl";
         public string slideAlternate = "RightCtrl";
+        public string freeCam = "P";
     }
 
     public static Key Jump
@@ -72,6 +75,11 @@ public static class PlayerKeybinds
     public static Key Slide
     {
         get { EnsureLoaded(); return slide; }
+    }
+
+    public static Key FreeCam
+    {
+        get { EnsureLoaded(); return freeCam; }
     }
 
     public static Key SlideAlternate
@@ -112,6 +120,9 @@ public static class PlayerKeybinds
             case PlayerAction.Slide:
                 slide = key;
                 slideAlternate = Key.None;
+                break;
+            case PlayerAction.FreeCam:
+                freeCam = key;
                 break;
             default:
                 Debug.LogError("Cannot assign a keybind for an unknown action.");
@@ -253,6 +264,7 @@ public static class PlayerKeybinds
         dash = ReadKey(data.dash, Key.LeftShift, "dash");
         slide = ReadKey(data.slide, Key.LeftCtrl, "slide");
         slideAlternate = ReadKey(data.slideAlternate, Key.RightCtrl, "slideAlternate", true);
+        freeCam = ReadKey(data.freeCam, Key.P, "freeCam");
     }
 
     private static Key ReadKey(string value, Key fallback, string field, bool allowNone = false)
@@ -284,7 +296,8 @@ public static class PlayerKeybinds
             moveLeftAlternate = moveLeftAlternate == Key.None ? string.Empty : moveLeftAlternate.ToString(),
             dash = dash.ToString(),
             slide = slide.ToString(),
-            slideAlternate = slideAlternate == Key.None ? string.Empty : slideAlternate.ToString()
+            slideAlternate = slideAlternate == Key.None ? string.Empty : slideAlternate.ToString(),
+            freeCam = freeCam.ToString()
         };
 
         try

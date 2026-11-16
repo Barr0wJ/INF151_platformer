@@ -20,6 +20,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomXOffset = 3f;
 
     private float targetFOV;
+    public static CameraController instance;
 
     // follows player ~~unless specified otherwise~~
     private void ProcessCameraFollow()
@@ -48,6 +49,16 @@ public class CameraController : MonoBehaviour
         );
     }
 
+    //Freecam
+    public void ToggleFreeCam()
+    {
+        if (player)
+        {
+            //player.gameObject.SetActive(!player.gameObject.activeSelf);
+            Debug.Log("Freecam toggled.");
+        }
+
+    }
     private void ProcessZoom()
     {
         if (!cam) return;
@@ -76,6 +87,14 @@ public class CameraController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         if (cam == null)
         {
             cam = GetComponent<Camera>();
