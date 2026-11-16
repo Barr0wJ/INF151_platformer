@@ -325,6 +325,11 @@ public class MovementController : MonoBehaviour
     {
         float input = 0f;
 
+        if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer)) 
+        { sprite.flipX = false; }
+        else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer))
+        { sprite.flipX = true; }
+
         if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveLeft, PlayerKeybinds.MoveLeftAlternate) 
             && Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer)) {
             input = -1f;
