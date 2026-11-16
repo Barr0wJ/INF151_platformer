@@ -258,7 +258,7 @@ public class MovementController : MonoBehaviour
             // allows the player to dash as many as times as needed when not sliding (basically anywhere)
             if (isGrounded) 
             {
-                canDash = true;
+                Invoke(nameof(canDash), dashCooldown);
             }
         }
 
@@ -388,8 +388,10 @@ public class MovementController : MonoBehaviour
 
             yield return new WaitForSeconds(wallJumpDuration);
         }
-        canDash = true; // Allow dashing after wall jump
         isWallJumping = false;
+        Invoke(nameof(canDash), dashCooldown); // Allow dashing after wall jump
+        
+        
 
     }
 
