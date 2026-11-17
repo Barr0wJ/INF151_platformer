@@ -32,7 +32,7 @@ public class MovementController : MonoBehaviour
     [Header("Dash Settings")]
     [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private float dashDur = 0.2f;
-    [SerializeField] private float dashCooldown = 0.8f;
+    [SerializeField] private float dashCooldown = 2f;
     [SerializeField] private float dashMovementBoost = 0.5f;
     [SerializeField] private float maxMovementMultiplier = 2f;
     [SerializeField] private float movementBoostRecovery = 0.75f;
@@ -122,7 +122,7 @@ public class MovementController : MonoBehaviour
 
     private void ProcessInput()
     {
-        Debug.Log(skillCheck.GetIsActive());
+        //Debug.Log(skillCheck.GetIsActive());
         if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam)&&(!skillCheck.GetIsActive()))
         {
             FreeCamera.ToggleFreeCam();
@@ -261,7 +261,7 @@ public class MovementController : MonoBehaviour
             // allows the player to dash as many as times as needed when not sliding (basically anywhere)
             if (isGrounded) 
             {
-                Invoke(nameof(canDash), dashCooldown);
+                Invoke(nameof(toggleDash), dashCooldown);
             }
         }
 
@@ -362,13 +362,13 @@ public class MovementController : MonoBehaviour
         {
             yield break; // Exit if not wall sliding
         }
-        
+
         isWallJumping = true;
         if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer) && lastJumpDir != 1)
         {
             Debug.Log("Wall Jump Right Wall");
             lastJumpDir = 1;
-
+            canDash = true;
             Vector2 jumpDirection = direction.normalized;
 
             Vector2 targetVelocity = new Vector2(-1 * wallJumpForce, wallJumpForce);
@@ -382,6 +382,7 @@ public class MovementController : MonoBehaviour
         {
             Debug.Log("Wall Jump Left Wall");
             lastJumpDir = -1;
+            canDash = true;
 
             Vector2 jumpDirection = direction.normalized;
             Vector2 targetVelocity = new Vector2(1 * wallJumpForce, wallJumpForce);
@@ -391,10 +392,7 @@ public class MovementController : MonoBehaviour
 
             yield return new WaitForSeconds(wallJumpDuration);
         }
-        isWallJumping = false;
-        Invoke(nameof(canDash), dashCooldown); // Allow dashing after wall jump
-        
-        
+        isWallJumping = false;        
 
     }
 
@@ -424,11 +422,13 @@ public class MovementController : MonoBehaviour
 
         rb.gravityScale = gravityScale;
         isDashing = false;
-
-        yield return new WaitForSeconds(dashCooldown);
-        canDash = true;
     }
 
+    private void toggleDash()
+    {
+        Debug.Log("bruh");
+        canDash = true;
+    }
     // ---- CHECKS ---- \\
 
     private void CheckGrounded()
