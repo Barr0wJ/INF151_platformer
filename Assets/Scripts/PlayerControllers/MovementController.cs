@@ -122,7 +122,7 @@ public class MovementController : MonoBehaviour
 
     private void ProcessInput()
     {
-        Debug.Log(skillCheck.GetIsActive());
+        // Debug.Log(skillCheck.GetIsActive());
         if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam)&&(!skillCheck.GetIsActive()))
         {
             FreeCamera.ToggleFreeCam();
