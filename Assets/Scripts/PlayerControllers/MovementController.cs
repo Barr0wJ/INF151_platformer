@@ -9,6 +9,8 @@ public class MovementController : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private AnimationController animationController;
+    [SerializeField] private TypingSkillCheck skillCheck;
+
     [SerializeField] private float baseMoveSpeed = 6.5f;
     [SerializeField] private float maxMoveSpeed = 16f;
     [SerializeField] private float movementAcceleration = 8f;
@@ -120,7 +122,8 @@ public class MovementController : MonoBehaviour
 
     private void ProcessInput()
     {
-        if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam))
+        Debug.Log(skillCheck.GetIsActive());
+        if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam)&&(!skillCheck.GetIsActive()))
         {
             FreeCamera.ToggleFreeCam();
         }
