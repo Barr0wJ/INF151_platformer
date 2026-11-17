@@ -254,6 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   sprite: {fileID: 1528589840}
   animationController: {fileID: 1528589842}
+  skillCheck: {fileID: 986914632}
   baseMoveSpeed: 7.5
   maxMoveSpeed: 15
   movementAcceleration: 8
@@ -34257,7 +34258,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 177.8
+  m_fontSize: 200
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1
