@@ -93,6 +93,7 @@ public class GameTimer : MonoBehaviour
 
     private void ProcessRoundTimer()
     {
+        Debug.Log(Time.timeScale);
         if (!gameRunning) return;
         if (gameEnd) return;
 
@@ -559,7 +560,16 @@ public class GameTimer : MonoBehaviour
     {
         timeScale = 1;
         SetTimeScale(timeScale);
+        // HandlePause();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void MainMenu()
+    {
+        timeScale = 1;
+        SetTimeScale(timeScale);
+        // Loads the main menu scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 
     // ---- MONOBEHAVIOUR ---- \\

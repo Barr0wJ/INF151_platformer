@@ -122,7 +122,7 @@ public class MovementController : MonoBehaviour
 
     private void ProcessInput()
     {
-        //Debug.Log(skillCheck.GetIsActive());
+        // Debug.Log(skillCheck.GetIsActive());
         if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam)&&(!skillCheck.GetIsActive()))
         {
             FreeCamera.ToggleFreeCam();
@@ -327,6 +327,11 @@ public class MovementController : MonoBehaviour
     private void WallSlide()
     {
         float input = 0f;
+
+        if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer)) 
+        { sprite.flipX = false; }
+        else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer))
+        { sprite.flipX = true; }
 
         if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveLeft, PlayerKeybinds.MoveLeftAlternate) 
             && Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer)) {
