@@ -111,7 +111,7 @@ public class GameTimer : MonoBehaviour
         {
             if (Keyboard.current.enterKey.wasPressedThisFrame)
             {
-                gameManager.instance.changeLevelTo(nextLevelName);
+                gameManager.instance.changeLevelTo(nextLevelName); // TRANSITION HERE PLS
             }
         }
     }
@@ -142,12 +142,13 @@ public class GameTimer : MonoBehaviour
             Debug.Log("Passed!");
             timerLabel.text = "You win! Final Time: " + GetClockTime() +
                 (isNewHighScore ? "\nNew High Score!" : string.Empty) +
-                "\nTop Scores:\n" + highScoresText;
+                "\nTop Scores:\n" + highScoresText + 
+                "\nPress ENTER to proceed";
         } 
         else
         {
             Debug.Log("Ran out of time");
-            timerLabel.text = "Ran out of time\nTop Scores:\n" + highScoresText;
+            timerLabel.text = "Ran out of time\nTop Scores:\n" + highScoresText + "\nPress ENTER to proceed";;
         }
 
     }
