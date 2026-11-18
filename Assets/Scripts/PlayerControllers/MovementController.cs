@@ -251,18 +251,11 @@ public class MovementController : MonoBehaviour
         //slide on ctrl/binding press
         if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
             isSliding = true;
-            Debug.Log("Sliding");
+            // Debug.Log("Sliding");
             canDash = false;
         }
         else{
             isSliding = false;
-            //Debug.Log("Not Sliding");
-            // Need the player to be able to dash again, but setting canDash to true here
-            // allows the player to dash as many as times as needed when not sliding (basically anywhere)
-            if (isGrounded) 
-            {
-                Invoke(nameof(toggleDash), dashCooldown);
-            }
         }
 
         // Jump (soft jump)
@@ -371,9 +364,8 @@ public class MovementController : MonoBehaviour
         isWallJumping = true;
         if (Physics2D.OverlapBox(wallCheckRight.position, wallCheckRightSize, 0f, wallLayer) && lastJumpDir != 1)
         {
-            Debug.Log("Wall Jump Right Wall");
+           // Debug.Log("Wall Jump Right Wall");
             lastJumpDir = 1;
-            canDash = true;
             Vector2 jumpDirection = direction.normalized;
 
             Vector2 targetVelocity = new Vector2(-1 * wallJumpForce, wallJumpForce);
@@ -382,12 +374,12 @@ public class MovementController : MonoBehaviour
             animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
+            canDash = true;
         }
         else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer) && lastJumpDir != -1)
         {
-            Debug.Log("Wall Jump Left Wall");
+          //  Debug.Log("Wall Jump Left Wall");
             lastJumpDir = -1;
-            canDash = true;
 
             Vector2 jumpDirection = direction.normalized;
             Vector2 targetVelocity = new Vector2(1 * wallJumpForce, wallJumpForce);
@@ -396,6 +388,7 @@ public class MovementController : MonoBehaviour
             animationController.SetState(AnimationState.Jump);
 
             yield return new WaitForSeconds(wallJumpDuration);
+            canDash = true;
         }
         isWallJumping = false;        
 
@@ -427,12 +420,21 @@ public class MovementController : MonoBehaviour
 
         rb.gravityScale = gravityScale;
         isDashing = false;
+        if (isGrounded){  
+            yield return new WaitForSeconds(dashCooldown);
+            toggleDash();
+        }
+        else
+        {
+            yield return new WaitForSeconds(dashCooldown);
+            toggleDash();
+        }
     }
 
     private void toggleDash()
     {
-        Debug.Log("bruh");
         canDash = true;
+        Debug.Log("Dash is now available");
     }
     // ---- CHECKS ---- \\
 

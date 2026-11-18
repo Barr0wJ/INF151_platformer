@@ -93,7 +93,7 @@ public class GameTimer : MonoBehaviour
 
     private void ProcessRoundTimer()
     {
-        Debug.Log(Time.timeScale);
+        //Debug.Log(Time.timeScale);
         if (!gameRunning) return;
         if (gameEnd) return;
 
