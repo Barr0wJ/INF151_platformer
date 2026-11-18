@@ -15,8 +15,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] private AudioClip startMiniGameSFX;
 
+    [SerializeField] private PlayerText playerText;
+
     [SerializeField] private DialogueHandler dialogue;
-    
 
     private CameraController cameraController;
     private MovementController movementController;
@@ -67,6 +68,11 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void RestartGame(float waitTime = 0f)
     {
+        if (waitTime > 0)
+        {
+            StartCoroutine(playerText.CountdownDeath((int) waitTime));
+        }
+
         StartCoroutine(WaitToRestart(waitTime));
     }
 

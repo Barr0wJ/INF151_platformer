@@ -25,17 +25,21 @@ public class DialogueHandler : MonoBehaviour
     private IEnumerator Type(string message, float endlag)
     {
         dialogueText.text = message;
-        dialogueText.maxVisibleCharacters = 0;
-
-        dialogueText.ForceMeshUpdate();
-
         int totalVisibleCharacters = dialogueText.textInfo.characterCount;
 
-        for (int i = 0; i <= totalVisibleCharacters; i++)
+        if (typingSpeed > 0)
         {
-            dialogueText.maxVisibleCharacters = i;
-            yield return new WaitForSecondsRealtime(typingSpeed);
+            dialogueText.maxVisibleCharacters = 0;
+            dialogueText.ForceMeshUpdate();
+
+            for (int i = 0; i <= totalVisibleCharacters; i++)
+            {
+                dialogueText.maxVisibleCharacters = i;
+                yield return new WaitForSecondsRealtime(typingSpeed);
+            }
         }
+        
+        dialogueText.maxVisibleCharacters = totalVisibleCharacters;
 
         yield return new WaitForSecondsRealtime(endlag);
 

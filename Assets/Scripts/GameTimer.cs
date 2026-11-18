@@ -5,6 +5,9 @@ using System.Text;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using UnityEngine.InputSystem;
+
 
 public class GameTimer : MonoBehaviour
 {
@@ -22,6 +25,7 @@ public class GameTimer : MonoBehaviour
     private bool gameRunning = true;
     private bool gameEnd = false; // we are sooooo inefficient
     private float timeScale = 1; // way to keep track during pause menu
+    private string nextLevelName;
 
     public bool IsPaused()
     {
@@ -95,20 +99,32 @@ public class GameTimer : MonoBehaviour
     {
         //Debug.Log(Time.timeScale);
         if (!gameRunning) return;
-        if (gameEnd) return;
+        if (!gameEnd) {
+            time -= Time.deltaTime;
+            timerLabel.text = GetClockTime();
 
-        time -= Time.deltaTime;
-        timerLabel.text = GetClockTime();
-
-        if (time <= 0)
+            if (time <= 0)
+            {
+                EndGame();
+            }
+        } else
         {
-            EndGame();
+            if (Keyboard.current.enterKey.wasPressedThisFrame)
+            {
+                gameManager.instance.changeLevelTo(nextLevelName);
+            }
         }
     }
 
-    public void EndGame(bool passed = false)
+    // private IEnumerator DisplayHighScores()
+    // {
+        
+    // }
+
+    public void EndGame(bool passed = false, string nextLevel = "Main Menu")
     {
         gameEnd = true;
+        nextLevelName = nextLevel;
         string sceneName = SceneManager.GetActiveScene().name;
         string[] previousHighScores = RetrieveHighScores(sceneName);
         bool isNewHighScore = passed &&

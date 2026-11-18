@@ -8,7 +8,7 @@ public class EndBlock : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) {
         if (ended) return;
         ended = true;
-        GameTimer.Instance.EndGame(true);
-        gameManager.instance.changeLevelTo(nextLevelName);
+        GameTimer.Instance.EndGame(true, nextLevelName);
+        // gameManager.instance.changeLevelTo(nextLevelName); // I moved this to GameTimer
     }
 }
