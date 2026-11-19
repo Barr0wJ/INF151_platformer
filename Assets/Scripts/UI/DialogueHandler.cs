@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class DialogueHandler : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class DialogueHandler : MonoBehaviour
     private IEnumerator Type(string message, float endlag)
     {
         dialogueText.text = message;
-        int totalVisibleCharacters = dialogueText.textInfo.characterCount;
+        int totalVisibleCharacters = message.Count();
 
         if (typingSpeed > 0)
         {
@@ -40,6 +41,7 @@ public class DialogueHandler : MonoBehaviour
         }
         
         dialogueText.maxVisibleCharacters = totalVisibleCharacters;
+        dialogueText.ForceMeshUpdate();
 
         yield return new WaitForSecondsRealtime(endlag);
 
