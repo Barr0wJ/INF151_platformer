@@ -1,12 +1,17 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Stopwatch_Speed : MonoBehaviour
 {
     public Image stopwatch_Arrow;
     public Image stopwatch_Background;
-    [SerializeField] private float maxMoveSpeed = 50f;
+   // [SerializeField] private float maxMoveSpeed = 50f;
+    [SerializeField] private float timeRemaining = 2f;
     [SerializeField] private Rigidbody2D playerRigidbody;
+
+    [SerializeField] private MovementController MovementController;
     private float rotationAmount;
 
     private void Awake()
@@ -25,10 +30,17 @@ public class Stopwatch_Speed : MonoBehaviour
         }
     }
 
-    private void Update()
+    public IEnumerator UpdateStopWatch()
     {
-        //Debug.Log(playerRigidbody.linearVelocity.x);
-        rotationAmount = Mathf.Abs(playerRigidbody.linearVelocity.x) / maxMoveSpeed;
-        stopwatch_Arrow.rectTransform.localRotation = Quaternion.Euler(0, 0, rotationAmount * -360);
+        while (timeRemaining > 0f)
+        {
+            timeRemaining = Mathf.Max(0f, timeRemaining - Time.deltaTime);
+            rotationAmount = timeRemaining / 2f;
+            stopwatch_Arrow.rectTransform.localRotation = Quaternion.Euler(0, 0, rotationAmount * -360);
+            yield return null;
+        }
+
+        timeRemaining = 2f;
     }
+
 }

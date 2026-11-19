@@ -67,6 +67,8 @@ public class MovementController : MonoBehaviour
     [SerializeField] private AudioClip dashSFX;
     [SerializeField] private AudioClip landSFX;
 
+    [SerializeField] private Stopwatch_Speed stopwatchSpeed;
+
 
     public bool movementEnabled = true;
 
@@ -255,10 +257,7 @@ public class MovementController : MonoBehaviour
             canDash = false;
         }
         else{
-            if (isGrounded) {
-                isSliding = false;
-                Invoke(nameof(toggleDash), dashCooldown);
-            }   
+            isSliding = false;
             
         }
 
@@ -377,8 +376,8 @@ public class MovementController : MonoBehaviour
             SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(2.5f, 3));
             animationController.SetState(AnimationState.Jump);
 
-            yield return new WaitForSeconds(wallJumpDuration);
             canDash = true;
+            yield return new WaitForSeconds(wallJumpDuration);
         }
         else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer) && lastJumpDir != -1)
         {
@@ -391,8 +390,8 @@ public class MovementController : MonoBehaviour
             SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(2.5f, 3));
             animationController.SetState(AnimationState.Jump);
 
-            yield return new WaitForSeconds(wallJumpDuration);
             canDash = true;
+            yield return new WaitForSeconds(wallJumpDuration);
         }
         isWallJumping = false;        
 
@@ -402,6 +401,7 @@ public class MovementController : MonoBehaviour
 
     private IEnumerator Dash()
     {
+        StartCoroutine(stopwatchSpeed.UpdateStopWatch());
         animationController.SetState(AnimationState.Run);
         canDash = false;
         isDashing = true;
@@ -438,8 +438,9 @@ public class MovementController : MonoBehaviour
     private void toggleDash()
     {
         canDash = true;
-        Debug.Log("Dash is now available");
+        //Debug.Log("Dash is now available");
     }
+
     // ---- CHECKS ---- \\
 
     private void CheckGrounded()
