@@ -255,7 +255,11 @@ public class MovementController : MonoBehaviour
             canDash = false;
         }
         else{
-            isSliding = false;
+            if (isGrounded) {
+                isSliding = false;
+                Invoke(nameof(toggleDash), dashCooldown);
+            }   
+            
         }
 
         // Jump (soft jump)
