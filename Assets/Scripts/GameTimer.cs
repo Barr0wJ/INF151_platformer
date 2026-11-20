@@ -109,6 +109,7 @@ public class GameTimer : MonoBehaviour
             }
         } else
         {
+            EndLevelScreen.instance.levelTransitionScreen();
             if (Keyboard.current.enterKey.wasPressedThisFrame)
             {
                 gameManager.instance.changeLevelTo(nextLevelName); // TRANSITION HERE PLS
