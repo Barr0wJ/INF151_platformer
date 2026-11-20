@@ -9,6 +9,14 @@ using TMPro;
 // presumably called by PlayerBehaviour
 public class TypingSkillCheck : MonoBehaviour
 {
+    private const string DifficultyPreferenceKey = "TypingSkillCheckDifficulty";
+    private const string DefaultDifficulty = "Easy";
+    private static readonly string[] DifficultyColumns =
+    {
+        "Beginner", "Easy", "Amateur", "Intermediate", "Advanced",
+        "Hard", "Insane", "Extreme", "Impossible"
+    };
+
     [SerializeField] private TextMeshProUGUI timeLabel;
     [SerializeField] private TextMeshProUGUI targetWordLabel;
     [SerializeField] private TextMeshProUGUI inputLabel;
@@ -31,8 +39,38 @@ public class TypingSkillCheck : MonoBehaviour
     private bool isActive = false;
     private float originalTimeScale; // probably 1 but just in case it isn't
 
-    private string[] easyWords = new string[0];
+    private string[] selectedWords = new string[0];
 
+    public static string[] GetDifficultyOptions()
+    {
+        return (string[])DifficultyColumns.Clone();
+    }
+
+    public static string GetSelectedDifficulty()
+    {
+        string difficulty = PlayerPrefs.GetString(DifficultyPreferenceKey, DefaultDifficulty);
+        if (System.Array.IndexOf(DifficultyColumns, difficulty) < 0)
+        {
+            Debug.LogWarning(
+                $"Saved typing difficulty '{difficulty}' is not valid. Using {DefaultDifficulty}.");
+            return DefaultDifficulty;
+        }
+
+        return difficulty;
+    }
+
+    public static bool SetSelectedDifficulty(string difficulty)
+    {
+        if (System.Array.IndexOf(DifficultyColumns, difficulty) < 0)
+        {
+            Debug.LogError($"Cannot set an unknown typing difficulty: '{difficulty}'.");
+            return false;
+        }
+
+        PlayerPrefs.SetString(DifficultyPreferenceKey, difficulty);
+        PlayerPrefs.Save();
+        return true;
+    }
 
     public bool GetIsActive()
     {
@@ -43,14 +81,16 @@ public class TypingSkillCheck : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(word))
         {
-            if (easyWords.Length == 0)
+            if (selectedWords.Length == 0)
             {
-                Debug.LogError("No words were found in the Easy column of TypingSkillCheckWords.csv.", this);
+                Debug.LogError(
+                    $"No words were found in the {GetSelectedDifficulty()} column of TypingSkillCheckWords.csv.",
+                    this);
                 return;
             }
 
-            int randomInt = Random.Range(0, easyWords.Length);
-            targetWord = easyWords[randomInt];
+            int randomInt = Random.Range(0, selectedWords.Length);
+            targetWord = selectedWords[randomInt];
         }
         else
         {
@@ -204,11 +244,14 @@ public class TypingSkillCheck : MonoBehaviour
         }
 
         List<string> headers = ParseCsvRow(rows[0]);
-        int easyColumn = headers.FindIndex(header =>
-            header.Trim().TrimStart('\uFEFF').Equals("Easy", System.StringComparison.OrdinalIgnoreCase));
-        if (easyColumn < 0)
+        string difficulty = GetSelectedDifficulty();
+        int difficultyColumn = headers.FindIndex(header =>
+            header.Trim().TrimStart('\uFEFF').Equals(
+                difficulty, System.StringComparison.OrdinalIgnoreCase));
+        if (difficultyColumn < 0)
         {
-            Debug.LogError("TypingSkillCheckWords.csv does not contain an Easy column.", this);
+            Debug.LogError(
+                $"TypingSkillCheckWords.csv does not contain a {difficulty} column.", this);
             return;
         }
 
@@ -216,9 +259,9 @@ public class TypingSkillCheck : MonoBehaviour
         for (int rowIndex = 1; rowIndex < rows.Length; rowIndex++)
         {
             List<string> columns = ParseCsvRow(rows[rowIndex]);
-            if (easyColumn < columns.Count)
+            if (difficultyColumn < columns.Count)
             {
-                string candidate = columns[easyColumn].Trim();
+                string candidate = columns[difficultyColumn].Trim();
                 if (!string.IsNullOrEmpty(candidate))
                 {
                     words.Add(candidate);
@@ -226,10 +269,11 @@ public class TypingSkillCheck : MonoBehaviour
             }
         }
 
-        easyWords = words.ToArray();
-        if (easyWords.Length == 0)
+        selectedWords = words.ToArray();
+        if (selectedWords.Length == 0)
         {
-            Debug.LogError("TypingSkillCheckWords.csv contains no words in the Easy column.", this);
+            Debug.LogError(
+                $"TypingSkillCheckWords.csv contains no words in the {difficulty} column.", this);
         }
     }
 

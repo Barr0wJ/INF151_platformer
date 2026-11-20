@@ -21609,6 +21609,10 @@ PrefabInstance:
       propertyPath: playerRigidbody
       value: 
       objectReference: {fileID: 1121599536}
+    - target: {fileID: 8791723243689801579, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
+      propertyPath: MovementController
+      value: 
+      objectReference: {fileID: 1121599537}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21625,6 +21629,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ce2eba8bafa4004eadae494fe28efee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TypingSkillCheck
+--- !u!114 &1108924725 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8791723243689801579, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
+  m_PrefabInstance: {fileID: 1108924723}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c504ba1f88af5943b774aed1824a127, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stopwatch_Speed
 --- !u!1001 &1121599535
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21685,6 +21700,10 @@ PrefabInstance:
       propertyPath: skillCheck
       value: 
       objectReference: {fileID: 1108924724}
+    - target: {fileID: 7221185046439449996, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
+      propertyPath: stopwatchSpeed
+      value: 
+      objectReference: {fileID: 1108924725}
     - target: {fileID: 7666522267891925507, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
       propertyPath: m_Name
       value: PlayerObject
@@ -21699,6 +21718,17 @@ Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 4098077219259966138, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
   m_PrefabInstance: {fileID: 1121599535}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1121599537 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7221185046439449996, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
+  m_PrefabInstance: {fileID: 1121599535}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66b2b59aed0bfe54f98fb95a68f5a5c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
 --- !u!1001 &1152074929
 PrefabInstance:
   m_ObjectHideFlags: 0

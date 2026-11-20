@@ -252,17 +252,6 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        //slide on ctrl/binding press
-        if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded){
-            isSliding = true;
-            // Debug.Log("Sliding");
-            canDash = false;
-        }
-        else{
-            isSliding = false;
-            
-        }
-
         // Jump (soft jump)
         if (PlayerKeybinds.WasReleased(PlayerKeybinds.Jump) && rb.linearVelocity.y > 0)
         {
@@ -562,6 +551,19 @@ public class MovementController : MonoBehaviour
                     (targetMoveSpeed - speedInInputDirection) / Time.fixedDeltaTime);// Calculate the required acceleration to reach the target speed
                 rb.AddForce(Vector2.right * inputDirection * acceleration * rb.mass);
             }
+        }
+
+        //slide on ctrl/binding press
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded)
+        {
+            isSliding = true;
+            Debug.Log("Sliding");
+            canDash = false;
+        }
+        else
+        {
+            isSliding = false;
+            Debug.Log("Not Sliding");
         }
         //Debug.Log($"Horizontal Speed: {horizontalSpeed}, Target Move Speed: {targetMoveSpeed}");
     }
