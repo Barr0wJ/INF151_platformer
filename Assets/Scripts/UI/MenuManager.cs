@@ -25,6 +25,7 @@ public class MenuManager : MonoBehaviour
         {"Level0", "Level 1", "Level 2", "Level 3" };
 
     public Slider volumeSlider;
+    [SerializeField] private Button typingDifficultyButton;
 
     
     public TMP_Text leftButtonText;
@@ -37,6 +38,9 @@ public class MenuManager : MonoBehaviour
     private TMP_Text pendingRebindText;
     private RectTransform scoreColumnsContent;
     private TMP_Text highScoresTitle;
+    private TMP_Text typingDifficultyButtonText;
+    private string[] typingDifficultyOptions;
+    private int typingDifficultyIndex;
     private GameObject confirmationPopup;
     private TMP_Text confirmationMessage;
     private string pendingClearSceneName;
@@ -54,6 +58,7 @@ public class MenuManager : MonoBehaviour
         PlayerKeybinds.Load();
         UpdateKeybindLabels();
         InitializeHighScoresPanel();
+        InitializeTypingDifficultySetting();
     }
 
     private void Update()
@@ -145,6 +150,48 @@ public class MenuManager : MonoBehaviour
         CancelRebind();
         settingsPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
+    }
+
+    private void InitializeTypingDifficultySetting()
+    {
+        if (typingDifficultyButton == null)
+        {
+            Debug.LogError("Cannot initialize typing difficulty because its button is not assigned.", this);
+            return;
+        }
+
+        typingDifficultyButtonText =
+            typingDifficultyButton.GetComponentInChildren<TMP_Text>(true);
+        if (typingDifficultyButtonText == null)
+        {
+            Debug.LogError("The typing difficulty button needs a child TMP text label.", this);
+            return;
+        }
+
+        typingDifficultyOptions = TypingSkillCheck.GetDifficultyOptions();
+        typingDifficultyIndex = Array.IndexOf(
+            typingDifficultyOptions, TypingSkillCheck.GetSelectedDifficulty());
+        if (typingDifficultyIndex < 0)
+        {
+            Debug.LogError("The saved typing difficulty is not available in the difficulty options.");
+            return;
+        }
+
+        typingDifficultyButtonText.text =
+            $"Typing Difficulty: {typingDifficultyOptions[typingDifficultyIndex]}";
+        typingDifficultyButton.onClick.RemoveListener(CycleTypingDifficulty);
+        typingDifficultyButton.onClick.AddListener(CycleTypingDifficulty);
+    }
+
+    private void CycleTypingDifficulty()
+    {
+        int nextIndex = (typingDifficultyIndex + 1) % typingDifficultyOptions.Length;
+        string difficulty = typingDifficultyOptions[nextIndex];
+        if (TypingSkillCheck.SetSelectedDifficulty(difficulty))
+        {
+            typingDifficultyIndex = nextIndex;
+            typingDifficultyButtonText.text = $"Typing Difficulty: {difficulty}";
+        }
     }
 
     public void OpenHighScores()
