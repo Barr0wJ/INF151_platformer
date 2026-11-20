@@ -33442,7 +33442,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270370006360682620, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_fontSize
-      value: 164.75
+      value: 166.05
       objectReference: {fileID: 0}
     - target: {fileID: 7156663547355201933, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_Pivot.x
