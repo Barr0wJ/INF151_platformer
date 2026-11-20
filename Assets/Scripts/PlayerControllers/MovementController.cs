@@ -546,10 +546,8 @@ public class MovementController : MonoBehaviour
         if (isDashing) return;
 
         float horizontalSpeed = rb.linearVelocity.x;
-        float targetMoveSpeed = Mathf.Min(movementAcceleration * movementMultiplier, maxMoveSpeed);
         float inputDirection = Mathf.Sign(moveInput.x);
         float direction = Mathf.Sign(horizontalSpeed);
-        float speedInInputDirection = horizontalSpeed * inputDirection;
 
         //Debug.Log(inputDirection);
         if (isGrounded)
@@ -563,14 +561,7 @@ public class MovementController : MonoBehaviour
             {
                 //Debug.Log(horizontalSpeed);
                 rb.AddForce(Vector2.right * inputDirection * movementAcceleration * rb.mass);
-                /*
-                float acceleration = Mathf.Min(
-                    movementAcceleration,
-                    (targetMoveSpeed - horizontalSpeed) / Time.fixedDeltaTime);// Calculate the required acceleration to reach the target speed
-                rb.AddForce(Vector2.right * inputDirection * acceleration * rb.mass);
-                */
             }
         }
-        //Debug.Log($"Horizontal Speed: {horizontalSpeed}, Target Move Speed: {targetMoveSpeed}");
     }
 }
