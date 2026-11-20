@@ -30,8 +30,17 @@ public class Stopwatch_Speed : MonoBehaviour
         }
     }
 
-    public IEnumerator UpdateStopWatch()
-    {
+    public IEnumerator UpdateStopWatch()//bool isWallJumping)
+    {   
+        /*
+        if (isWallJumping)
+        {
+           ResetStopwatch();
+           yield return null;
+        }
+        */
+        timeRemaining = 2f;
+        
         while (timeRemaining > 0f)
         {
             timeRemaining = Mathf.Max(0f, timeRemaining - Time.deltaTime);
@@ -39,8 +48,14 @@ public class Stopwatch_Speed : MonoBehaviour
             stopwatch_Arrow.rectTransform.localRotation = Quaternion.Euler(0, 0, rotationAmount * -360);
             yield return null;
         }
-
         timeRemaining = 2f;
+    }
+
+    public void ResetStopwatch()
+    {
+        timeRemaining = 0f;
+        rotationAmount = 0f;
+        stopwatch_Arrow.rectTransform.localRotation = Quaternion.Euler(0, 0, rotationAmount * -360);
     }
 
 }

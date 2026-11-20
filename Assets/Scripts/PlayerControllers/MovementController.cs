@@ -84,6 +84,8 @@ public class MovementController : MonoBehaviour
     private bool isWallSliding;
     private bool isWallJumping;
 
+    private bool hasWallJumped;
+
     private bool isDashing;
     private bool isSliding;
     private bool isZiplining;
@@ -376,7 +378,9 @@ public class MovementController : MonoBehaviour
             SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(2.5f, 3));
             animationController.SetState(AnimationState.Jump);
 
-            canDash = true;
+            if (canDash==false) hasWallJumped = true;
+            toggleDash();
+            stopwatchSpeed.ResetStopwatch();
             yield return new WaitForSeconds(wallJumpDuration);
         }
         else if (Physics2D.OverlapBox(wallCheckLeft.position, wallCheckLeftSize, 0f, wallLayer) && lastJumpDir != -1)
@@ -390,10 +394,12 @@ public class MovementController : MonoBehaviour
             SFXManager.instance.PlaySFX(wallJumpSFX, transform, 1f, UnityEngine.Random.Range(2.5f, 3));
             animationController.SetState(AnimationState.Jump);
 
-            canDash = true;
+            if (canDash==false) hasWallJumped = true;
+            toggleDash();
+            stopwatchSpeed.ResetStopwatch();
             yield return new WaitForSeconds(wallJumpDuration);
         }
-        isWallJumping = false;        
+        isWallJumping = false;   
 
     }
 
@@ -401,7 +407,6 @@ public class MovementController : MonoBehaviour
 
     private IEnumerator Dash()
     {
-        StartCoroutine(stopwatchSpeed.UpdateStopWatch());
         animationController.SetState(AnimationState.Run);
         canDash = false;
         isDashing = true;
@@ -421,17 +426,32 @@ public class MovementController : MonoBehaviour
         SFXManager.instance.PlaySFX(dashSFX, transform, 1f, UnityEngine.Random.Range(1, 1.3f));
 
         yield return new WaitForSeconds(dashDur);
+        StartCoroutine(stopwatchSpeed.UpdateStopWatch());
 
         rb.gravityScale = gravityScale;
         isDashing = false;
         if (isGrounded){  
             yield return new WaitForSeconds(dashCooldown);
-            toggleDash();
+            if (hasWallJumped)
+            {
+                hasWallJumped = false;
+                yield break;
+            }
+            else{
+                toggleDash();
+            }
         }
         else
         {
             yield return new WaitForSeconds(dashCooldown);
-            toggleDash();
+            if (hasWallJumped)
+            {
+                hasWallJumped = false;
+                yield break;
+            }
+            else{
+                toggleDash();
+            }
         }
     }
 
