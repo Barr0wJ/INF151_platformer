@@ -11,10 +11,9 @@ public class MovementController : MonoBehaviour
     [SerializeField] private AnimationController animationController;
     [SerializeField] private TypingSkillCheck skillCheck;
 
-    [SerializeField] private float baseMoveSpeed = 6.5f;
-    [SerializeField] private float maxMoveSpeed = 16f;
-    [SerializeField] private float movementAcceleration = 8f;
-    [SerializeField] private float movementDeceleration = 4f;
+    [SerializeField] private float maxMoveSpeed = 10f;
+    [SerializeField] private float movementAcceleration = 14f;
+    [SerializeField] private float movementDeceleration = 60f;
 
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f;
@@ -91,6 +90,7 @@ public class MovementController : MonoBehaviour
     private bool isZiplining;
     private Zipline activeZipline;
     private bool canDash = true;
+    private bool canMove = true;
     private float gravityScale;
     private float movementMultiplier = 1f;
 
@@ -156,23 +156,24 @@ public class MovementController : MonoBehaviour
         }
 
         Vector2 input = Vector2.zero;
-        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveLeft, PlayerKeybinds.MoveLeftAlternate))
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveLeft, PlayerKeybinds.MoveLeftAlternate)&&canMove)
         {
             input.x -= 1f;
         }
 
-        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveRight, PlayerKeybinds.MoveRightAlternate))
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveRight, PlayerKeybinds.MoveRightAlternate)&&canMove)
         {
             input.x += 1f;
         }
-        if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveUp, PlayerKeybinds.MoveUpAlternate)&&canMove)  
         {
             input.y += 1f;
         }
-        if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed)
+        if (PlayerKeybinds.IsPressed(PlayerKeybinds.MoveDown, PlayerKeybinds.MoveDownAlternate)&&canMove)
         {
             input.y -= 1f;
         }
+
         moveInput = input;
         if (input.x != 0f && !IsTouchingWall())
         {
@@ -201,6 +202,21 @@ public class MovementController : MonoBehaviour
         {
             coyoteCounter = coyoteDur;
             remainingJumps = maxExtraJumps;
+
+            //Sliding
+            if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate))
+            {
+                isSliding = true;
+                canMove = false;
+                //Debug.Log("Sliding");
+            }
+
+            if (PlayerKeybinds.WasReleased(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate))
+            {
+                isSliding = false;
+                canMove = true;
+                //Debug.Log("Not Sliding");
+            }
 
             if (xSpeed > 1f)
             {
@@ -530,40 +546,30 @@ public class MovementController : MonoBehaviour
         if (isDashing) return;
 
         float horizontalSpeed = rb.linearVelocity.x;
-        float targetMoveSpeed = Mathf.Min(baseMoveSpeed * movementMultiplier, maxMoveSpeed);
+        float targetMoveSpeed = Mathf.Min(movementAcceleration * movementMultiplier, maxMoveSpeed);
+        float inputDirection = Mathf.Sign(moveInput.x);
+        float direction = Mathf.Sign(horizontalSpeed);
+        float speedInInputDirection = horizontalSpeed * inputDirection;
 
-        if (moveInput.x != 0f)
+        //Debug.Log(inputDirection);
+        if (isGrounded)
         {
-            float inputDirection = Mathf.Sign(moveInput.x);
-            float speedInInputDirection = horizontalSpeed * inputDirection;
-            if (horizontalSpeed < baseMoveSpeed)
+            if ((Mathf.Abs(horizontalSpeed) > maxMoveSpeed) && (!isSliding))
             {
-                rb.AddForce(Vector2.right * inputDirection * baseMoveSpeed);
+                //Debug.Log("Decel");
+                rb.AddForce(Vector2.right * -direction * movementDeceleration * rb.mass);
             }
-            if ((speedInInputDirection > baseMoveSpeed) && !isSliding)
+            else if ((moveInput.x!=0) && (horizontalSpeed < maxMoveSpeed))
             {
-                rb.AddForce(Vector2.right * -inputDirection * movementDeceleration * rb.mass);
-            }
-            else if (speedInInputDirection < targetMoveSpeed)
-            {
+                //Debug.Log(horizontalSpeed);
+                rb.AddForce(Vector2.right * inputDirection * movementAcceleration * rb.mass);
+                /*
                 float acceleration = Mathf.Min(
                     movementAcceleration,
-                    (targetMoveSpeed - speedInInputDirection) / Time.fixedDeltaTime);// Calculate the required acceleration to reach the target speed
+                    (targetMoveSpeed - horizontalSpeed) / Time.fixedDeltaTime);// Calculate the required acceleration to reach the target speed
                 rb.AddForce(Vector2.right * inputDirection * acceleration * rb.mass);
+                */
             }
-        }
-
-        //slide on ctrl/binding press
-        if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate) && isGrounded)
-        {
-            isSliding = true;
-            Debug.Log("Sliding");
-            canDash = false;
-        }
-        else
-        {
-            isSliding = false;
-            Debug.Log("Not Sliding");
         }
         //Debug.Log($"Horizontal Speed: {horizontalSpeed}, Target Move Speed: {targetMoveSpeed}");
     }

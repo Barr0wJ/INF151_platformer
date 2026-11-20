@@ -33442,7 +33442,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270370006360682620, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_fontSize
-      value: 166.05
+      value: 141.2
       objectReference: {fileID: 0}
     - target: {fileID: 7156663547355201933, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_Pivot.x
@@ -33606,9 +33606,25 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7221185046439449996, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
+      propertyPath: maxMoveSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7221185046439449996, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
+      propertyPath: baseMoveSpeed
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7221185046439449996, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
       propertyPath: stopwatchSpeed
       value: 
       objectReference: {fileID: 2082939405}
+    - target: {fileID: 7221185046439449996, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
+      propertyPath: movementAcceleration
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7221185046439449996, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
+      propertyPath: movementDeceleration
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 7666522267891925507, guid: ba34e4dde05e8b2409e4318b86f007b2, type: 3}
       propertyPath: m_Name
       value: PlayerObject
