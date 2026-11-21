@@ -11,9 +11,9 @@ public class MovementController : MonoBehaviour
     [SerializeField] private AnimationController animationController;
     [SerializeField] private TypingSkillCheck skillCheck;
 
-    [SerializeField] private float maxMoveSpeed = 10f;
-    [SerializeField] private float movementAcceleration = 14f;
-    [SerializeField] private float movementDeceleration = 60f;
+    private float maxMoveSpeed = 10f;
+    private float movementAcceleration = 14f;
+    private float movementDeceleration = 60f;
 
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f;
