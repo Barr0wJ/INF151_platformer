@@ -1330,8 +1330,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5686444756263156065}
   - {fileID: 6217441284920064054}
+  - {fileID: 5686444756263156065}
   - {fileID: 4855370273116686499}
   - {fileID: 3300337849641808284}
   - {fileID: 7084261888650359094}
@@ -1592,6 +1592,7 @@ MonoBehaviour:
   pauseMenu: {fileID: 6420650129630701211}
   timerLabel: {fileID: 5270370006360682620}
   time: 100
+  EndLevelScreen: {fileID: 0}
   enablePausing: 1
 --- !u!222 &7116756505254172990
 CanvasRenderer:
@@ -1648,7 +1649,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 166.05
+  m_fontSize: 139.45
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1

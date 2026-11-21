@@ -19,6 +19,8 @@ public class GameTimer : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private TextMeshProUGUI timerLabel;
     [SerializeField] private float time = 100; // seconds
+
+    [SerializeField] private EndLevelScreen EndLevelScreen;
     public bool enablePausing = true;
     private float maxTime;
 
@@ -109,7 +111,7 @@ public class GameTimer : MonoBehaviour
             }
         } else
         {
-            EndLevelScreen.instance.levelTransitionScreen();
+            EndLevelScreen.levelTransitionScreen();
             if (Keyboard.current.enterKey.wasPressedThisFrame)
             {
                 gameManager.instance.changeLevelTo(nextLevelName); // TRANSITION HERE PLS
