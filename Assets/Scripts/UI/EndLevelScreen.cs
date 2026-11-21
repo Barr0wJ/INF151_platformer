@@ -6,6 +6,11 @@ public class EndLevelScreen : MonoBehaviour
 
     [SerializeField] private GameObject endLevelScreen;
 
+    [SerializeField] private ImageTransparencyFader ImageTransparencyFader;
+
+    [SerializeField] private Color newTargetColor;
+    [SerializeField] private float duration;
+
     private void Awake()
     {
         endLevelScreen.SetActive(false);
@@ -13,5 +18,6 @@ public class EndLevelScreen : MonoBehaviour
     public void levelTransitionScreen()
     {
         endLevelScreen.SetActive(true);
+        //ImageTransparencyFader.StartFade(newTargetColor, duration);
     }
 }

@@ -1331,9 +1331,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6217441284920064054}
+  - {fileID: 3300337849641808284}
   - {fileID: 5686444756263156065}
   - {fileID: 4855370273116686499}
-  - {fileID: 3300337849641808284}
   - {fileID: 7084261888650359094}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1649,7 +1649,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 139.45
+  m_fontSize: 150.3
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1
