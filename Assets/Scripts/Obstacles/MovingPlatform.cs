@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class MovingPlatform : MonoBehaviour
 {
     public enum PathSource
@@ -12,7 +13,7 @@ public class MovingPlatform : MonoBehaviour
     public enum LoopMode
     {
         PingPong,
-        Loop 
+        Loop
     }
 
     [SerializeField] private PathSource pathSource = PathSource.ChildTransforms;
@@ -24,8 +25,7 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private float pointDelay = 0.5f;
     [SerializeField] private float endPointDelay = 2f;
 
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] private float triggerHeight = 0.1f;
+    public Vector2 PlatformDelta { get; private set; }
 
     private List<Vector3> worldWaypoints = new List<Vector3>();
     private int currentIndex = 0;
@@ -38,7 +38,6 @@ public class MovingPlatform : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Kinematic;
 
-        SetupTriggerCollider();
         StoreWaypoints();
 
         if (worldWaypoints.Count > 0)
@@ -56,50 +55,29 @@ public class MovingPlatform : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (worldWaypoints.Count < 2) return;
+        if (worldWaypoints.Count < 2)
+        {
+            PlatformDelta = Vector2.zero;
+            return;
+        }
 
         if (waitTimer > 0f)
         {
             waitTimer -= Time.fixedDeltaTime;
+            PlatformDelta = Vector2.zero;
             return;
         }
 
         Vector2 targetPosition = worldWaypoints[currentIndex];
         Vector2 nextPosition = Vector2.MoveTowards(rb.position, targetPosition, speed * Time.fixedDeltaTime);
+        
+        PlatformDelta = nextPosition - rb.position;
         rb.MovePosition(nextPosition);
 
-        if (Vector2.Distance(rb.position, targetPosition) < 0.001f)
+        if (Vector2.Distance(nextPosition, targetPosition) < 0.001f)
         {
             rb.MovePosition(targetPosition);
             AdvanceToNextWaypoint();
-        }
-    }
-
-    private void SetupTriggerCollider()
-    {
-        BoxCollider2D[] colliders = GetComponents<BoxCollider2D>();
-        BoxCollider2D solidCollider = null;
-        BoxCollider2D triggerCollider = null;
-
-        foreach (BoxCollider2D col in colliders)
-        {
-            if (col.isTrigger)
-                triggerCollider = col;
-            else
-                solidCollider = col;
-        }
-
-        if (solidCollider != null)
-        {
-            if (triggerCollider == null)
-            {
-                triggerCollider = gameObject.AddComponent<BoxCollider2D>();
-                triggerCollider.isTrigger = true;
-            }
-
-            triggerCollider.size = new Vector2(solidCollider.size.x, triggerHeight);
-            float topEdgeY = solidCollider.offset.y + (solidCollider.size.y * 0.5f) + (triggerHeight * 0.5f);
-            triggerCollider.offset = new Vector2(solidCollider.offset.x, topEdgeY);
         }
     }
 
@@ -174,32 +152,6 @@ public class MovingPlatform : MonoBehaviour
         }
 
         waitTimer = isAtEndPoint ? endPointDelay : pointDelay;
-    }
-
-    public void AttachPlayer(Transform target)
-    {
-        if (playerTransform != null && target == playerTransform)
-        {
-            playerTransform.SetParent(transform);
-        }
-    }
-
-    public void DetachPlayer(Transform target)
-    {
-        if (playerTransform != null && target == playerTransform && playerTransform.parent == transform)
-        {
-            playerTransform.SetParent(null);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        AttachPlayer(other.transform);
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        DetachPlayer(other.transform);
     }
 
     private void OnDrawGizmos()

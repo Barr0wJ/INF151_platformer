@@ -93,6 +93,7 @@ public class MovementController : MonoBehaviour
     private bool canMove = true;
     private float gravityScale;
     private float movementMultiplier = 1f;
+    private MovingPlatform currentPlatform;
 
     private Vector2 direction = Vector2.right;
 
@@ -193,48 +194,36 @@ public class MovementController : MonoBehaviour
 
         }
 
-        float xSpeed = Math.Abs(rb.linearVelocityX);
-        float ySpeed = Math.Abs(rb.linearVelocityY);
-        animationController.SetSpeed(xSpeed/maxRunningSpeed);
-        // Debug.Log(xSpeed);
+        float moveAmount = Mathf.Abs(moveInput.x);
+        float xSpeed = Mathf.Abs(rb.linearVelocityX);
+        animationController.SetSpeed(moveAmount);
 
         if (isGrounded)
         {
             coyoteCounter = coyoteDur;
             remainingJumps = maxExtraJumps;
 
-            //Sliding
             if (PlayerKeybinds.IsPressed(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate))
             {
                 isSliding = true;
                 canMove = false;
-                //Debug.Log("Sliding");
             }
 
             if (PlayerKeybinds.WasReleased(PlayerKeybinds.Slide, PlayerKeybinds.SlideAlternate))
             {
                 isSliding = false;
                 canMove = true;
-                //Debug.Log("Not Sliding");
             }
 
-            if (xSpeed > 1f)
+            if (moveAmount > 0.01f && !IsTouchingWall())
             {
                 groundParticles.Play();
-                
-                if (ySpeed <= 0.5f)
-                {
-                    animationController.SetState(AnimationState.Run);
-                }
+                animationController.SetState(AnimationState.Run);
             } 
             else
             {
                 groundParticles.Stop();
-                
-                if (ySpeed <= 0.5f)
-                {
-                    animationController.SetState(AnimationState.Idle);
-                }
+                animationController.SetState(AnimationState.Idle);
             }
         }
         else
@@ -245,7 +234,7 @@ public class MovementController : MonoBehaviour
             runParticles.Stop();
         }
 
-        if (xSpeed >= runningVelocity) // probably inefficient
+        if (isGrounded && moveAmount > 0.01f && !IsTouchingWall() && xSpeed >= runningVelocity)
         {
             runParticles.Play();
         }
@@ -505,6 +494,26 @@ public class MovementController : MonoBehaviour
     }
 
     // ---- RUNTIEME METHODS ---- \\
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.5f)
+            {
+                currentPlatform = collision.gameObject.GetComponent<MovingPlatform>();
+                return;
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (currentPlatform != null && collision.gameObject == currentPlatform.gameObject)
+        {
+            currentPlatform = null;
+        }
+    }
 
     private void Awake()
     {
