@@ -31,7 +31,7 @@ public class MovementController : MonoBehaviour
     [Header("Dash Settings")]
     [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private float dashDur = 0.2f;
-    [SerializeField] private float dashCooldown = 2f;
+    private float dashCooldown = 1.7f;
     [SerializeField] private float dashMovementBoost = 0.5f;
     [SerializeField] private float maxMovementMultiplier = 2f;
     [SerializeField] private float movementBoostRecovery = 0.75f;

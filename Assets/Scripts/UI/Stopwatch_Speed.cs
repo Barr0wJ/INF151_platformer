@@ -8,7 +8,7 @@ public class Stopwatch_Speed : MonoBehaviour
     public Image stopwatch_Arrow;
     public Image stopwatch_Background;
    // [SerializeField] private float maxMoveSpeed = 50f;
-    [SerializeField] private float timeRemaining = 2f;
+    [SerializeField] private float timeRemaining = 1.7f;
     [SerializeField] private Rigidbody2D playerRigidbody;
 
     [SerializeField] private MovementController MovementController;
@@ -39,16 +39,16 @@ public class Stopwatch_Speed : MonoBehaviour
            yield return null;
         }
         */
-        timeRemaining = 2f;
+        timeRemaining = 1.7f;
         
         while (timeRemaining > 0f)
         {
             timeRemaining = Mathf.Max(0f, timeRemaining - Time.deltaTime);
-            rotationAmount = timeRemaining / 2f;
+            rotationAmount = timeRemaining / 1.7f;
             stopwatch_Arrow.rectTransform.localRotation = Quaternion.Euler(0, 0, rotationAmount * -360);
             yield return null;
         }
-        timeRemaining = 2f;
+        timeRemaining = 1.7f;
     }
 
     public void ResetStopwatch()
