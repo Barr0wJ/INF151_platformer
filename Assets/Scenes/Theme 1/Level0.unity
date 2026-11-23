@@ -1426,7 +1426,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b1d6a421b9730944c831da953005f045, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 50c5d4be8dc0a72418e63d3dd616defb, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: b1d6a421b9730944c831da953005f045, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1493,7 +1493,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: -5.230797, z: 0.3655548, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &581866121
@@ -35630,7 +35630,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1199032400
@@ -37210,7 +37210,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270370006360682620, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_fontSize
-      value: 166.1
+      value: 166.05
       objectReference: {fileID: 0}
     - target: {fileID: 7156663547355201933, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_Pivot.x
