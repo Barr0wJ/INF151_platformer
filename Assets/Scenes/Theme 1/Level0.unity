@@ -35781,7 +35781,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2635492856318588301, guid: 52b59c24f4d131f4184eebd8d2aa736c, type: 3}
       propertyPath: lines
-      value: Move with <color=RED>A and D</color> or <color=RED><- and -></color>
+      value: Move with <color=RED>A and D</color> or <color=RED><- and -></color>. Press <color=RED>P</color> to freecam
       objectReference: {fileID: 0}
     - target: {fileID: 3834459511347033975, guid: 52b59c24f4d131f4184eebd8d2aa736c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -37206,7 +37206,7 @@ PrefabInstance:
       objectReference: {fileID: 1199032400}
     - target: {fileID: 4855370273116686499, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.7076111
+      value: 1.7076416
       objectReference: {fileID: 0}
     - target: {fileID: 5270370006360682620, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_fontSize

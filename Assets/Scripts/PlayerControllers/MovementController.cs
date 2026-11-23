@@ -125,13 +125,18 @@ public class MovementController : MonoBehaviour
         }
     }
 
+    private void ProcessFreecamInput()
+    {
+        if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam) && (!skillCheck.GetIsActive()) && Time.frameCount > skillCheck.lastFrame)
+        {
+            Debug.Log(skillCheck.lastFrame + " " + Time.frameCount);
+            FreeCamera.ToggleFreeCam();
+        }
+    }
+
     private void ProcessInput()
     {
         // Debug.Log(skillCheck.GetIsActive());
-        if (PlayerKeybinds.WasPressed(PlayerKeybinds.FreeCam)&&(!skillCheck.GetIsActive()))
-        {
-            FreeCamera.ToggleFreeCam();
-        }
 
         if (isDashing) return;
         Keyboard keyboard = Keyboard.current;
@@ -526,6 +531,7 @@ public class MovementController : MonoBehaviour
     private void Update()
     {
         ProcessInput();
+        ProcessFreecamInput();
         CheckGrounded();
         CheckObstacle();
     }

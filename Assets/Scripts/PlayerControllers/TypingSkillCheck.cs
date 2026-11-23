@@ -29,6 +29,7 @@ public class TypingSkillCheck : MonoBehaviour
     [SerializeField] private AudioClip beatMiniGameSFX;
     [SerializeField] private AudioClip failMiniGameSFX;
 
+    public int lastFrame;
     private GameTimer gameTimer;
     private GameObject playerObject;
     private PlayerBehaviour playerBehaviour;
@@ -79,6 +80,7 @@ public class TypingSkillCheck : MonoBehaviour
 
     public void StartSkillCheck(string word = null)
     {
+        // word = "pop";
         if (string.IsNullOrWhiteSpace(word))
         {
             if (selectedWords.Length == 0)
@@ -188,6 +190,7 @@ public class TypingSkillCheck : MonoBehaviour
     private void Complete(bool success = true)
     {
         isActive = false;
+        lastFrame = Time.frameCount;
 
         timeLabel.gameObject.SetActive(false);
         targetWordLabel.gameObject.SetActive(false);
