@@ -29,5 +29,20 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Theme 1/Level 3.unity
     guid: 27e1d8baf8a695c41b967362ca8965d7
+  - enabled: 1
+    path: Assets/Scenes/Theme 2/Theme 2 Opening.unity
+    guid: c5b9c61881d7f5f46a8f6e67364c4523
+  - enabled: 1
+    path: Assets/Scenes/Theme 2/Level 2-1.unity
+    guid: d52efbac9fbe71042b7c1faf8af23050
+  - enabled: 1
+    path: Assets/Scenes/Theme 2/Level 2-2.unity
+    guid: c7fe0df60c424dc4e9bc33ef8220e0bc
+  - enabled: 1
+    path: Assets/Scenes/Theme 2/Level 2-3.unity
+    guid: 038223c979ccc2040b9ecfd70efbe4c1
+  - enabled: 1
+    path: Assets/Scenes/Theme 2/Game Ending.unity
+    guid: 6c5d3bf7c2b80b740a4cd16024d5cfb4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
