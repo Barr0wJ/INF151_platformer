@@ -1719,7 +1719,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2635492856318588301, guid: 52b59c24f4d131f4184eebd8d2aa736c, type: 3}
       propertyPath: lines
-      value: Dash with <color="red">SHIFT</color>
+      value: Dash with <color="red">SHIFT.</color> Your dash is represented by your stopwatch, when the arm fully rotates, you can dash again.
       objectReference: {fileID: 0}
     - target: {fileID: 3834459511347033975, guid: 52b59c24f4d131f4184eebd8d2aa736c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36715,7 +36715,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2635492856318588301, guid: 52b59c24f4d131f4184eebd8d2aa736c, type: 3}
       propertyPath: lines
-      value: Try using a <color="red">Wall Jump + Dash
+      value: Try using a <color="red">Wall Jump + Dash. Wall jumping allows you to once more.
       objectReference: {fileID: 0}
     - target: {fileID: 3834459511347033975, guid: 52b59c24f4d131f4184eebd8d2aa736c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -37210,7 +37210,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270370006360682620, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_fontSize
-      value: 166.05
+      value: 166.2
       objectReference: {fileID: 0}
     - target: {fileID: 7156663547355201933, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_Pivot.x
@@ -37295,6 +37295,10 @@ PrefabInstance:
     - target: {fileID: 7514699782223054893, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8020995273761840735, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8791723243689801579, guid: 783f4564ba028fa47b93989bf228aa88, type: 3}
       propertyPath: timeRemaining
@@ -37600,6 +37604,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 8044690077250268844, guid: c6df5d1baa7f7f14a9bc3f1cb1dd2fbd, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

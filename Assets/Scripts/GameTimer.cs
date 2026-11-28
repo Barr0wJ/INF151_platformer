@@ -26,6 +26,7 @@ public class GameTimer : MonoBehaviour
 
     private bool gameRunning = true;
     private bool gameEnd = false; // we are sooooo inefficient
+    private bool lostLevel = false;
     private float timeScale = 1; // way to keep track during pause menu
     private string nextLevelName;
 
@@ -151,9 +152,16 @@ public class GameTimer : MonoBehaviour
         else
         {
             Debug.Log("Ran out of time");
-            timerLabel.text = "Ran out of time\nTop Scores:\n" + highScoresText + "\nPress ENTER to proceed";;
+            lostLevel = true;
+            timerLabel.text = "Ran out of time\nTop Scores:\n" + highScoresText + "\nPress ENTER to restart the level.";;
         }
 
+    }
+
+    public bool getLostLevel() 
+    
+    {
+        return lostLevel;
     }
 
     public static string[] RetrieveHighScores(string sceneName = null, int limit = 3)
@@ -599,6 +607,7 @@ public class GameTimer : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            lostLevel = false;
         }
         else
         {

@@ -114,5 +114,9 @@ public class PlayerBehaviour : MonoBehaviour
     {
         ProcessAdminControls();
         ProcessHotkeys();
+        if (gameTimer.getLostLevel() == true && Keyboard.current.enterKey.wasPressedThisFrame) 
+        {
+            RestartGame(0f);
+        }
     }
 }
